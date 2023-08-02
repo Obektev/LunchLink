@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1009256664834",
+    "project_id": "lunchlink-c1cb5",
+    "storage_bucket": "lunchlink-c1cb5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009256664834:android:476e5f3c65f1df6a0abc1b",
+        "android_client_info": {
+          "package_name": "com.obektevCo.lunchlink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1009256664834-h7c6soqubfpocqtvq537eqqa0l6o4g0u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.obektevCo.lunchlink",
+            "certificate_hash": "f84ba6f00c2b59f3cda33adbd78fbaa50b7ae935"
+          }
+        },
+        {
+          "client_id": "1009256664834-62bq6p9e97oolbnhcngot6g70knvskv6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBS32rl2mwFGaI_qvZolILZ81xFciCkAMo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1009256664834-62bq6p9e97oolbnhcngot6g70knvskv6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

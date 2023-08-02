@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/info_button"
+        android:icon="@drawable/baseline_info_24"
+        android:title="@string/about"
+        app:showAsAction="ifRoom"
+        android:iconTint="#A8A8A8"
+        tools:targetApi="o" />
+    <item android:id="@+id/reload_button"
+        android:icon="@drawable/baseline_refresh_24"
+        android:title="@string/reload_page"
+        app:showAsAction="ifRoom"
+        android:iconTint="#A8A8A8"
+        tools:targetApi="o" />
+
+
+
+
+</menu>

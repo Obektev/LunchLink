@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.obektevCo.lunchlink.MainActivity"
+    android:backgroundTint="#fff">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:background="#fff">
+
+        <TextView
+            android:id="@+id/app_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="70dp"
+            android:fontFamily="@font/aldrich"
+            android:text="@string/app_name"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="35sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textStyle="bold"/>
+
+        <ScrollView
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="120dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- First meal -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/breakfast_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    app:cardCornerRadius="15dp"
+                    android:layout_margin="5dp"
+                    android:elevation="3dp"
+                    android:translationZ="3dp" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/breakfast"
+                        android:textStyle="bold"
+                        android:textColor="#fff"
+                        android:elevation="10dp"
+                        android:textSize="30sp"
+                        android:fontFamily="@font/aldrich"
+                        android:translationZ="10dp"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginTop="60dp"
+                        android:layout_marginStart="10dp"
+                        />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/breakfast"
+                        android:background="@color/white"
+                        android:scaleType="centerCrop" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- Second meal -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/diet_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    app:cardCornerRadius="15dp"
+                    android:layout_margin="5dp"
+                    android:elevation="3dp"
+                    android:translationZ="3dp" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/diet"
+                        android:textColor="#fff"
+                        android:elevation="10dp"
+                        android:textSize="30sp"
+                        android:fontFamily="@font/aldrich"
+                        android:textStyle="bold"
+                        android:translationZ="10dp"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginTop="60dp"
+                        android:layout_marginStart="10dp"
+                        />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/diet"
+                        android:background="@color/white"
+                        android:scaleType="centerCrop" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- Third meal -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/brunch_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    app:cardCornerRadius="15dp"
+                    android:layout_margin="5dp"
+                    android:elevation="3dp"
+                    android:translationZ="3dp" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/brunch"
+                        android:textStyle="bold"
+                        android:textColor="#fff"
+                        android:elevation="10dp"
+                        android:textSize="30sp"
+                        android:fontFamily="@font/aldrich"
+                        android:translationZ="10dp"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginTop="60dp"
+                        android:layout_marginStart="10dp"
+                        />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/afternoon"
+                        android:background="@color/white"
+                        android:scaleType="centerCrop" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- Custom meal -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/custom_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    app:cardCornerRadius="15dp"
+                    android:layout_margin="5dp"
+                    android:elevation="3dp"
+                    android:translationZ="3dp" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/custom_meal"
+                        style="bold"
+                        android:textColor="#fff"
+                        android:elevation="10dp"
+                        android:textSize="30sp"
+                        android:fontFamily="@font/aldrich"
+                        android:textStyle="bold"
+                        android:translationZ="10dp"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginTop="60dp"
+                        android:layout_marginStart="10dp"
+                        />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/custom"
+                        android:background="@color/white"
+                        android:scaleType="centerCrop" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- Empty meal to avoid unreadable
+                     text below menu button -->
+                <androidx.cardview.widget.CardView
+                    android:background="#00000000"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:elevation="0dp"
+                    android:translationZ="0dp"/>
+
+            </LinearLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="63dp"
+        android:layout_gravity="bottom"
+        android:backgroundTint="#fff"
+        app:menu="@menu/app_bar_menu"
+        app:hideOnScroll="true"
+        app:fabAlignmentMode="end">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="190dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent">
+
+            <TextView
+                android:id="@+id/date_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/aldrich"
+                android:text="@string/date"
+                android:textAlignment="textStart"
+                android:textColor="@color/semi_text"
+                android:textSize="15sp"
+
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/aldrich"
+                android:text="@string/duty"
+                android:textAlignment="textStart"
+                android:textColor="@color/semi_text"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
+    </com.google.android.material.bottomappbar.BottomAppBar>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:srcCompat="@drawable/baseline_menu_book_24"
+        app:rippleColor="#987848"
+        app:layout_anchor="@id/bottomAppBar"
+        app:backgroundTint="#CCB05A"
+        app:elevation="3dp"
+        app:pressedTranslationZ="2dp"
+        android:contentDescription="@string/bottom_sheet_behavior" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        app:maxButtonHeight="50dp"
+        app:menu="@menu/top_app_bar_menu"
+        />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/todo"
+        android:scaleType="centerCrop"
+        android:src="@drawable/reg_background" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="50dp"
+        android:contentDescription="@string/todo"
+        android:elevation="3dp"
+        android:src="@drawable/lunch_link_logo"
+        android:translationZ="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/registration_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/round_shape"
+        android:backgroundTint="#9E000000"
+        android:fontFamily="@font/aldrich"
+        android:padding="10dp"
+        android:text="@string/registration_form"
+        android:textAlignment="center"
+        android:textColor="#EFEEEE"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo"
+        android:lineSpacingExtra="3dp"
+        android:alpha="1"/>
+
+    <!-- TODO: REMOVE AUTOFILL HINTS THIS -->
+    <EditText
+        android:id="@+id/code_input"
+        style="@style/Widget.AppCompat.AutoCompleteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="50dp"
+        android:autofillHints="+375 "
+        android:background="@drawable/round_shape"
+        android:backgroundTint="#9E000000"
+        android:fontFamily="@font/aldrich"
+        android:hint="@string/enter_code_here"
+        android:inputType="phone"
+        android:padding="5dp"
+        android:singleLine="false"
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:textColorHint="#C8C8C8"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registration_text"
+        android:digits="1234567890+()- "/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/verify_button"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="50dp"
+        android:background="@drawable/round_shape"
+        android:backgroundTint="#C10F162E"
+        android:elevation="3dp"
+        android:fontFamily="@font/aldrich"
+        android:text="@string/verify"
+        android:textAlignment="center"
+        android:textColor="#C1FFFFFF"
+        android:textSize="30sp"
+        android:translationZ="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/code_input">
+
+    </androidx.appcompat.widget.AppCompatButton>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

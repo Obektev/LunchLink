@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">LunchLink</string>
+    <string name="about">About</string>
+    <string name="notifications">Notifications</string>
+    <string name="accountsettings">AccountSettings</string>
+    <string name="breakfast">Breakfast</string>
+    <string name="diet">Diet</string>
+    <string name="brunch">Brunch</string>
+    <string name="date">date</string>
+    <string name="duty">duty</string>
+    <string name="monday">Mon</string>
+    <string name="tuesday">Tue</string>
+    <string name="wednesday">Кри</string>
+    <string name="thursday">Thu</string>
+    <string name="friday">Fri</string>
+    <string name="saturday">Sat</string>
+    <string name="sunday">Sun</string>
+    <string name="button">Button</string>
+    <string name="enter_name">Enter your name</string>
+    <string name="enter_second_name">Enter your second name</string>
+    <string name="cancel">Cancel</string>
+    <string name="are_u_sure_to_delete">Are you sure to delete this item</string>
+    <string name="custom">Custom</string>
+    <string name="custom_meal">Custom meal</string>
+    <string name="delete">Delete</string>
+    <string name="refresh">Refresh</string>
+    <string name="settings">Settings</string>
+    <string name="change_user_name">Change user name</string>
+    <string name="change_server_ip">Change server ip</string>
+    <string name="connection_established">Connection established</string>
+    <string name="failed_to_connect">Failed to connect to the server</string>
+    <string name="ip_changed">IP has been changed</string>
+    <string name="name_changed">Name has been changed</string>
+    <string name="menu">Menu</string>
+    <string name="credits">Made by Obektev ©</string>
+    <string name="administrator_settings">Administrator key</string>
+    <string name="now_you_are_an_admin">You became Administrator</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="enter_text">Enter Text</string>
+    <string name="you_already_admin">You are already Administrator</string>
+    <string name="darkmode">darkmode</string>
+    <string name="testordername">TestOrderName</string>
+    <string name="user_card">user_card</string>
+    <string name="reload_page">Reload page</string>
+    <string name="current_name">Your name now is</string>
+    <string name="welcome">Welcome</string>
+    <string name="user">User</string>
+    <string name="main_activity_about_text">Welcome to LunchLink.
+        \nThere you can order some meals at your school.
+        \nYou can change your avatar and username in the settings!
+        \nIf you find any errors or bugs, tell me! <i>obektev@gmaill.com</i>
+        \nMade by Alexander (Obektev) Ivanov.
+        \nGymnasium №5, Vitebsk city
+        \n2023</string>
+    <string name="todo">TODO</string>
+    <string name="registration_welcome">Welcome to LunchLink. \nIt seems, you didn\'t open this application yet.
+    So, you need to enter your mobile phone, to link this account to your smartphone.\n This is the way to save your account from hacking and you will
+    never lose it.\n
+    Authentication process is completely free!</string>
+    <string name="_continue">Continue</string>
+    <string name="registration_form">Security code has been sent to your phone number.
+        <b>Don\'t tell anybody this code!</b></string>
+    <string name="login_anonymously">Login anonymously</string>
+    <string name="login_google">Login with Google</string>
+    <string name="login_email">Login with email</string>
+    <string name="enter_your_mobile_phone_here">Enter your mobile phone here</string>
+    <string name="invalid_phone_number">Invalid phone number</string>
+    <string name="send">Send code</string>
+    <string name="enter_code_here">Enter code here</string>
+    <string name="verify">Verify</string>
+    <string name="code_sent">The code has been sent</string>
+    <string name="wrong_code">Wrong code! Try again</string>
+    <string name="success">Success!</string>
+    <string name="registration_final_text">Cool! We are almost there! One more step - introduce yourself to make everybody know who are you!</string>
+    <string name="enter_your_name_and_surname">Enter your name and surname</string>
+    <string name="sign_out_from_profile">Sign out from profile</string>
+    <string name="signed_out">Signed out. Restarting application</string>
+    <string name="change_avatar_image">Change Avatar Image</string>
+    <string name="avatar_changed">Avatar changed successfully</string>
+    <string name="about_and_credits">About and credits</string>
+</resources>
