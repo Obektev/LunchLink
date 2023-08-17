@@ -46,12 +46,12 @@ public class UserAvatarChanging {
                                             // You can now use Glide to load the updated avatar image into the ImageView for preview.
                                             LunchLinkUtilities.makeToast(context, context.getString(R.string.avatar_changed));
                                         } else {
-                                            // Failed to update user profile.
+                                            LunchLinkUtilities.makeToast(context, context.getString(R.string.something_went_wrong));
                                         }
                                     });
                         });
                     } else {
-                        // Image upload failed.
+                        LunchLinkUtilities.makeToast(context, context.getString(R.string.something_went_wrong));
                     }
                 });
     }

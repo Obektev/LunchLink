@@ -1,25 +1,43 @@
 package com.obektevCo.lunchlink;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 
 public class MainActivity extends AppCompatActivity {
+
     private void goToActivity(Enums activity_index) {
 
-        Intent intent = null;
+        Intent intent;
         if (activity_index  == Enums.SETTINGSACTIVITY) {
             intent = new Intent(MainActivity.this, SettingsActivity.class);
         } else {
@@ -33,23 +51,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void setDateAndDay() {
         TextView date_object = findViewById(R.id.date_text);
-        date_object.setText(LunchLinkUtilities.getDate(getApplicationContext()));
+        LunchLinkUtilities.getDate(getApplicationContext(), date ->
+                date_object.setText(String.format("%s: %s", getString(R.string.date), date)));
     }
     private void setUpMealsButtons() {
         CardView breakfast_card = findViewById(R.id.breakfast_card);
-        breakfast_card.setOnClickListener(view -> { goToActivity(Enums.BREAKFAST);});
+        breakfast_card.setOnClickListener(view -> goToActivity(Enums.BREAKFAST));
         CardView diet_card = findViewById(R.id.diet_card);
-        diet_card.setOnClickListener(view -> { goToActivity(Enums.DIET);});
+        diet_card.setOnClickListener(view -> goToActivity(Enums.DIET));
         CardView brunch_card = findViewById(R.id.brunch_card);
-        brunch_card.setOnClickListener(view -> { goToActivity(Enums.BRUNCH);});
+        brunch_card.setOnClickListener(view -> goToActivity(Enums.BRUNCH));
         CardView custom_card = findViewById(R.id.custom_card);
-        custom_card.setOnClickListener(view -> { goToActivity(Enums.CUSTOM);});
+        custom_card.setOnClickListener(view -> goToActivity(Enums.CUSTOM));
     }
 
     private void setUpWidgets() {
         // Settings button
         View setting_button = findViewById(R.id.menuSettings);
-        setting_button.setOnClickListener(view -> { goToActivity(Enums.SETTINGSACTIVITY);});
+        setting_button.setOnClickListener(view -> goToActivity(Enums.SETTINGSACTIVITY));
 
         // Credits when tap on the app's title
         TextView application_title = findViewById(R.id.app_title);
@@ -83,6 +102,50 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void checkUser() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if(firebaseUser == null) { // Check if user signed in firebase
+            Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
+            startActivity(intent);
+        } else {
+            if (firebaseUser.getDisplayName() == null) {
+                Toast.makeText(getApplicationContext(), getString(R.string.name_not_set), Toast.LENGTH_LONG).show();
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class).putExtra("registration_flag", 1));
+            } else {
+
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                db.collection("users")
+                        .document(firebaseUser.getUid())
+                        .get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            if (documentSnapshot.exists()) {
+                                String cityName = documentSnapshot.getString("cityName");
+                                String className = documentSnapshot.getString("className");
+                                String schoolName = documentSnapshot.getString("schoolName");
+
+                                if (cityName == null || className == null || schoolName == null) {
+                                    if (cityName == null)
+                                        LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.city_not_set));
+                                    if (schoolName == null)
+                                        LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.school_not_set));
+                                    if (className == null)
+                                        LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.class_not_set));
+
+                                    Intent intent = new Intent(this, RegistrationActivity.class);
+                                    intent.putExtra("registration_flag", 2);
+                                    startActivity(intent);
+                                } else {
+                                    LunchLinkUtilities.makeToast(getApplicationContext(), String.format("%s, %s", getString(R.string.welcome), firebaseUser.getDisplayName()));
+                                }
+                            }
+                        })
+                        .addOnFailureListener(e -> LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.failed_to_connect)));
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,21 +157,100 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        if(firebaseUser == null) { // Check if user signed in firebase
-            Intent intent = new Intent(this, RegistrationActivity.class);
-            startActivity(intent);
-        } else {
-            LunchLinkUtilities.makeToast(getApplicationContext(), String.format("%s, %s", getString(R.string.welcome), firebaseUser.getDisplayName()));
-        }
-
+        checkUser(); // check if user signed in, has name, class
 
         // Setup
         setDateAndDay();
         setUpMealsButtons();
         setUpWidgets();
+        setUpMenuImage();
+        checkInternetConnection();
         UserSettings.initialize(getApplicationContext());
 
     }
+    float xDown = 0;
+    float yDown = 0;
+    @SuppressLint("ClickableViewAccessibility")
+
+    private void makeMenuMovable(ImageView imageView) {
+        imageView.setOnTouchListener((v, event) -> {
+            switch (event.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    xDown = event.getX();
+                    yDown = event.getY();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    float moveX,moveY;
+                    moveX = event.getX();
+                    moveY = event.getY();
+
+                    float distanceX = moveX -xDown;
+                    float distanceY  = moveY -yDown;
+                    imageView.setX(imageView.getX()+distanceX);
+                    imageView.setY(imageView.getY()+distanceY);
+                    break;
+            }
+            return true;
+        });
+    }
+
+    private void setUpMenuImage() {
+        ImageView imageView = findViewById(R.id.mealImageView);
+        imageView.setVisibility(View.GONE);
+
+        AnimatedVectorDrawableCompat animatedVectorDrawableCompat = AnimatedVectorDrawableCompat.create(this, R.drawable.spin_loading);
+        imageView.setImageDrawable(animatedVectorDrawableCompat);
+
+        ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 360f);
+        rotationAnimator.setDuration(2000); // Set the animation duration in milliseconds
+        rotationAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        rotationAnimator.start();
+
+    }
+
+    private void checkInternetConnection() {
+        // Get a reference to the ".info/connected" path
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance("https://lunchlink-c1cb5-default-rtdb.europe-west1.firebasedatabase.app").getReference(".info/connected");
+
+        // Listen for changes in the connection status
+        Toolbar toolbar = findViewById(R.id.top_toolbar);
+        MenuItem menuItem = toolbar.getMenu().findItem(R.id.connectionImage);
+        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.show_your_internet_connection));
+                return false;
+            }
+        });
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            int failed_count = 0;
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean isConnected = Boolean.TRUE.equals(snapshot.getValue(Boolean.class));
+
+                if (isConnected) {
+                    // Connected to Firebase
+                    // You can proceed with your Firebase-related operations
+                    if (failed_count > 1)
+                        LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.connection_established));
+
+                    menuItem.setVisible(true);
+                    menuItem.setIcon(R.drawable.baseline_signal_wifi_4_bar_24);
+                } else {
+                    if (failed_count > 0)
+                        LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.failed_connected_to_server));
+
+                    menuItem.setVisible(true);
+                    menuItem.setIcon(R.drawable.baseline_signal_wifi_connected_no_internet_4_24);
+                    failed_count++;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error if any
+            }
+        });
+    }
+
 }

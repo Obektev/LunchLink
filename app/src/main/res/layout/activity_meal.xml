@@ -13,6 +13,17 @@
         android:layout_gravity="bottom"
         android:background="#fff">
 
+        <ImageView
+            android:id="@+id/loadingIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="matrix"
+            android:src="@drawable/spin_loading"
+            android:translationZ="1dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/meal_title"
             android:layout_width="wrap_content"
@@ -39,8 +50,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/round_shape"
-            android:elevation="3dp"
-            android:translationZ="3dp">
+            android:elevation="8dp"
+            android:translationZ="5dp">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -62,7 +73,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-
+                    <TextView
+                        android:id="@+id/no_orders_yet_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="@string/no_oders_yet"
+                        android:textAlignment="center"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/aldrich"
+                        android:textColor="#8f8f8f"
+                        />
                     <View
                         android:id="@+id/spacer"
                         android:layout_width="match_parent"
@@ -78,17 +98,18 @@
         app:elevation="3dp"
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="63dp"
         android:layout_gravity="bottom"
         android:backgroundTint="#fff"
         app:menu="@menu/app_bar_menu_order_activity"
         app:hideOnScroll="true"
+
         app:maxButtonHeight="40dp">
         <LinearLayout
-
             android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="190dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
             android:background="@android:color/transparent">
 
             <TextView
@@ -97,9 +118,11 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/aldrich"
                 android:text="@string/date"
-                android:textStyle="bold"
+                android:textAlignment="textStart"
                 android:textColor="@color/semi_text"
                 android:textSize="15sp"
+
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -109,9 +132,10 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/aldrich"
                 android:text="@string/duty"
-                android:textStyle="bold"
+                android:textAlignment="textStart"
                 android:textColor="@color/semi_text"
                 android:textSize="15sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>

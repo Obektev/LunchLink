@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/todo"
+        android:scaleType="centerCrop"
+        android:src="@drawable/reg_background" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="40dp"
+        android:contentDescription="@string/todo"
+        android:elevation="3dp"
+        android:src="@drawable/lunch_link_logo"
+        android:translationZ="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"  />
+    <TextView
+        android:id="@+id/choosing_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/round_shape"
+        android:backgroundTint="#9E000000"
+        android:fontFamily="@font/aldrich"
+        android:padding="10dp"
+        android:text="@string/choose_school_message"
+        android:textAlignment="center"
+        android:textColor="#EFEEEE"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo"
+        android:lineSpacingExtra="3dp"
+        android:alpha="1"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/choosing_text">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/first_textinput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/round_shape"
+            android:backgroundTint="#B71B1B1B"
+            android:hint="@string/choose_city"
+            android:textColorHint="@color/white"
+            app:boxBackgroundColor="#B71B1B1B"
+            app:boxStrokeColor="#B72E2E2E"
+            app:hintTextColor="@color/white">
+
+            <AutoCompleteTextView
+                android:id="@+id/auto_complete_textview1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/todo"
+                android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/second_textinput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/round_shape"
+            android:backgroundTint="#B71B1B1B"
+            android:hint="@string/choose_school"
+            android:textColorHint="@color/white"
+            app:boxBackgroundColor="#B71B1B1B"
+            app:boxStrokeColor="#B72E2E2E"
+            app:hintTextColor="@color/white"
+            android:visibility="invisible">
+
+            <AutoCompleteTextView
+                android:id="@+id/auto_complete_textview2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/third_textinput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/round_shape"
+            android:backgroundTint="#B71B1B1B"
+            android:hint="@string/choose_class"
+            android:textColorHint="@color/white"
+            app:boxBackgroundColor="#B71B1B1B"
+            app:boxStrokeColor="#B72E2E2E"
+            app:hintTextColor="@color/white"
+            android:visibility="invisible">
+
+            <AutoCompleteTextView
+                android:id="@+id/auto_complete_textview3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/continue_button"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/round_shape"
+        android:backgroundTint="#C10F162E"
+        android:fontFamily="@font/aldrich"
+        android:text="@string/_continue"
+        android:textColor="#C1FFFFFF"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        android:visibility="invisible"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

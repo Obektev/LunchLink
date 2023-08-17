@@ -7,6 +7,15 @@
     tools:context="com.obektevCo.lunchlink.MainActivity"
     android:backgroundTint="#fff">
 
+    <ImageView
+        android:id="@+id/mealImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="matrix"
+        android:translationZ="1dp"
+        android:src="@drawable/spin_loading"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -202,7 +211,8 @@
         android:backgroundTint="#fff"
         app:menu="@menu/app_bar_menu"
         app:hideOnScroll="true"
-        app:fabAlignmentMode="end">
+        app:fabAlignmentMode="end"
+        >
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="190dp"
@@ -240,18 +250,22 @@
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/menu_floating_button"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+
         app:srcCompat="@drawable/baseline_menu_book_24"
-        app:rippleColor="#987848"
+        app:rippleColor="#97845E"
+        app:maxImageSize="30dp"
         app:layout_anchor="@id/bottomAppBar"
-        app:backgroundTint="#CCB05A"
+        app:backgroundTint="#EADC7F"
         app:elevation="3dp"
+
         app:pressedTranslationZ="2dp"
-        android:contentDescription="@string/bottom_sheet_behavior" />
+        android:contentDescription="@string/bottom_sheet_behavior"  />
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/top_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#fff"
