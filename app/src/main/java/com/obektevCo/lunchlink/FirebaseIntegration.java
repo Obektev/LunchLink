@@ -22,10 +22,10 @@ public class FirebaseIntegration {
     public static void setUserSchool(Context context, String school_name) {
         FirebaseFirestore db = FirebaseFirestore.getInstance(); // DON'T USE STATIC DB, IT'S MEMORY LEAK
         CollectionReference usersRef = db.collection("users");
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser(); // much better to get user here to avoid null user before registration
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser(); // much better to get user here to avoid null user before registration
 
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
+        if (user != null) {
+            String userId = user.getUid();
 
             // Create a reference to the "users" collection and the document for the current user
             DocumentReference userDocRef = usersRef.document(userId);
@@ -50,10 +50,10 @@ public class FirebaseIntegration {
     public static void setUserCity(Context context, String city_name) {
         FirebaseFirestore db = FirebaseFirestore.getInstance(); // DON'T USE STATIC DB, IT'S MEMORY LEAK
         CollectionReference usersRef = db.collection("users");
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser(); // much better to get user here to avoid null user before registration
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser(); // much better to get user here to avoid null user before registration
 
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
+        if (user != null) {
+            String userId = user.getUid();
 
             // Create a reference to the "users" collection and the document for the current user
             DocumentReference userDocRef = usersRef.document(userId);
@@ -79,10 +79,10 @@ public class FirebaseIntegration {
     public static void setUserClass(Context context, String class_name) {
         FirebaseFirestore db = FirebaseFirestore.getInstance(); // DON'T USE STATIC DB, IT'S MEMORY LEAK
         CollectionReference usersRef = db.collection("users");
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser(); // much better to get user here to avoid null user before registration
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser(); // much better to get user here to avoid null user before registration
 
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
+        if (user != null) {
+            String userId = user.getUid();
 
             // Create a reference to the "users" collection and the document for the current user
             DocumentReference userDocRef = usersRef.document(userId);
@@ -104,6 +104,46 @@ public class FirebaseIntegration {
                     });
         }
     }
+
+    public static void setUserName() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance(); // DON'T USE STATIC DB, IT'S MEMORY LEAK
+        CollectionReference usersRef = db.collection("users");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser(); // much better to get user here to avoid null user before registration
+
+        if (user != null) {
+            String userId = user.getUid();
+
+            // Create a reference to the "users" collection and the document for the current user
+            DocumentReference userDocRef = usersRef.document(userId);
+
+            // Create a data object with the user's class name
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("userName", user.getDisplayName());
+
+            // Set the data in the Firestore document
+            userDocRef.set(userData, SetOptions.merge());
+        }
+    }
+    public static void setUserPhoneNumber() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance(); // DON'T USE STATIC DB, IT'S MEMORY LEAK
+        CollectionReference usersRef = db.collection("users");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser(); // much better to get user here to avoid null user before registration
+
+        if (user != null) {
+            String userId = user.getUid();
+
+            // Create a reference to the "users" collection and the document for the current user
+            DocumentReference userDocRef = usersRef.document(userId);
+
+            // Create a data object with the user's class name
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("userPhoneNumber", user.getPhoneNumber());
+
+            // Set the data in the Firestore document
+            userDocRef.set(userData, SetOptions.merge());
+        }
+    }
+
     public interface OnSchoolNamesLoadedListener {
         void onSchoolNamesLoaded(List<String> schoolNames);
     }
@@ -123,5 +163,28 @@ public class FirebaseIntegration {
             }
         });
     }
-
+    public static void getUserInfo(onUserInfoGotListener listener) {
+        Map<String, String> result = new HashMap<>();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user != null;
+        db.collection("users")
+                .document(user.getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String cityName = documentSnapshot.getString("cityName");
+                        String className = documentSnapshot.getString("className");
+                        String schoolName = documentSnapshot.getString("schoolName");
+                        result.put("cityName", cityName);
+                        result.put("schoolName", schoolName);
+                        result.put("className", className);
+                        result.put("userName", user.getDisplayName());
+                        listener.onInfoGot(result);
+                    }
+                });
+    }
+    interface onUserInfoGotListener {
+        void onInfoGot(Map<String, String> userInfo);
+    }
 }

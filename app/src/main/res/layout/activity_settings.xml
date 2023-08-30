@@ -66,10 +66,18 @@
             android:backgroundTint="#F6F6F6"
             android:elevation="5dp"
             android:translationZ="5dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:drawableStart="@drawable/baseline_logout_24"
+            android:drawableTint="@color/semi_text"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/aldrich"
             android:textColor="@color/semi_text"
             android:textSize="20sp"
-            android:text="@string/sign_out_from_profile"/>
+            android:textAlignment="textStart"
+            android:lineSpacingExtra="5dp"
+            android:text="@string/logout_from_profile"/>
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/change_avatar_button"
             android:layout_width="match_parent"
@@ -85,10 +93,18 @@
             android:backgroundTint="#F6F6F6"
             android:elevation="5dp"
             android:translationZ="5dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:drawableStart="@drawable/baseline_add_a_photo_24"
+            android:drawablePadding="10dp"
+            android:drawableTint="@color/semi_text"
             android:fontFamily="@font/aldrich"
             android:textColor="@color/semi_text"
             android:textSize="20sp"
+            android:textAlignment="textStart"
+            android:lineSpacingExtra="5dp"
             android:text="@string/change_avatar_image"/>
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/change_username_button"
             android:layout_width="match_parent"
@@ -102,12 +118,46 @@
             app:layout_constraintTop_toBottomOf="@id/change_avatar_button"
             android:background="@drawable/round_shape"
             android:backgroundTint="#F6F6F6"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:drawableStart="@drawable/baseline_drive_file_rename_outline_24"
+            android:drawablePadding="10dp"
+            android:drawableTint="@color/semi_text"
             android:elevation="5dp"
             android:translationZ="5dp"
             android:fontFamily="@font/aldrich"
             android:textColor="@color/semi_text"
             android:textSize="20sp"
+            android:textAlignment="textStart"
+            android:lineSpacingExtra="5dp"
             android:text="@string/change_user_name"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/get_userinfo_button"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="@string/todo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/change_username_button"
+            android:background="@drawable/round_shape"
+            android:backgroundTint="#F6F6F6"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:drawableStart="@drawable/baseline_info_24"
+            android:drawablePadding="10dp"
+            android:drawableTint="@color/semi_text"
+            android:elevation="5dp"
+            android:translationZ="5dp"
+            android:fontFamily="@font/aldrich"
+            android:textColor="@color/semi_text"
+            android:textSize="20sp"
+            android:textAlignment="textStart"
+            android:text="@string/checkup_your_info"
+            android:lineSpacingExtra="5dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -75,7 +75,7 @@
         android:background="@drawable/round_shape"
         android:backgroundTint="#C10F162E"
         android:fontFamily="@font/aldrich"
-        android:text="@string/_continue"
+        android:text="@string/continue_"
         android:textColor="#C1FFFFFF"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,7 +1,6 @@
 package com.obektevCo.lunchlink;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.util.Map;
@@ -37,7 +36,7 @@ public class LunchLinkUtilities {
 
             @Override
             public void onFailure(Call<Map<String, String>> call, Throwable t) {
-                Log.w("Date HTTP", t.toString());
+                listener.onDateGot(null);
                 LunchLinkUtilities.makeToast(context, context.getString(R.string.unable_to_get_date));
             }
         });
@@ -85,6 +84,7 @@ public class LunchLinkUtilities {
 
         return phone_number;
     }
+
 
 }
 

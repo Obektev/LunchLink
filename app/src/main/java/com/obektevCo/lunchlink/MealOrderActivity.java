@@ -17,10 +17,11 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 
 public class MealOrderActivity extends AppCompatActivity {
 
+    String mealName;
     private void setupWidgets() {
         // Title
         TextView meal_title = findViewById(R.id.meal_title);
-        String mealName = getIntent().getStringExtra("meal_number");
+        mealName = getIntent().getStringExtra("meal_number");
         meal_title.setText(parseMealTitle(getApplicationContext(), mealName));
 
         // Date
@@ -30,13 +31,14 @@ public class MealOrderActivity extends AppCompatActivity {
         // Plus order button
         View meal_order_button = findViewById(R.id.add_order_button);
         meal_order_button.setOnClickListener(v -> {
-            ImageView imageView = findViewById(R.id.loadingIcon);
-            imageView.setVisibility(View.VISIBLE);
-            OrderMealUtil.createOrder(MealOrderActivity.this,
-                    date_text.getText().toString()
-                            .replace(getString(R.string.date) + ':', "")
-                            .replace("/","|") ,mealName,
-                    findViewById(R.id.orders_list));
+            LunchLinkUtilities.getDate(getApplicationContext(), date -> {
+                ImageView imageView = findViewById(R.id.loadingIcon);
+                imageView.setVisibility(View.VISIBLE);
+                OrderMealUtil.createOrder(MealOrderActivity.this,
+                        date.replace("/","|"),
+                        mealName,
+                        findViewById(R.id.orders_list));
+            });
         });
 
         // Bottom app bar, info button usage
@@ -54,12 +56,6 @@ public class MealOrderActivity extends AppCompatActivity {
         });
     }
 
-    private void getPreviousOrders() {
-        String meal_name = getIntent().getStringExtra("meal_number");
-        meal_name = parseMealTitle(getApplicationContext(), meal_name);
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +63,16 @@ public class MealOrderActivity extends AppCompatActivity {
 
         setupWidgets();
         setupLoadingIcon();
-        // TODO: check if user has already ordered something, open dialog to make it possible to "Ivanov & Loban first meal".
-        //  Alert this in another activities to! SERVER SIDE PLEASE
+        getPreviousOrders();
+    }
+
+    private void getPreviousOrders() {
+        LunchLinkUtilities.getDate(getApplicationContext(), date -> {
+            OrderMealUtil.getPreviousOrders(MealOrderActivity.this,
+                    date.replace("/","|"),
+                    mealName,
+                    findViewById(R.id.orders_list));
+        });
     }
 
     private void setupLoadingIcon() {

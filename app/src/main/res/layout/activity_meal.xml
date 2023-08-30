@@ -77,7 +77,7 @@
                         android:id="@+id/no_orders_yet_text"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:text="@string/no_oders_yet"
+                        android:text="@string/no_orders_yet"
                         android:textAlignment="center"
                         android:textSize="20sp"
                         android:fontFamily="@font/aldrich"

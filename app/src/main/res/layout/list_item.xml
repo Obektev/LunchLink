@@ -5,6 +5,9 @@
     android:padding="16dp"
     android:maxLines="1"
     android:ellipsize="end"
+    android:textSize="16sp"
+    android:backgroundTint="#E3E3E3"
+    android:textColor="#05091B"
     android:textAppearance="?attr/textAppearanceSubtitle1">
 
 </TextView>

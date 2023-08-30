@@ -2,6 +2,8 @@ package com.obektevCo.lunchlink;
 
 import static com.obektevCo.lunchlink.FirebaseIntegration.getNamesFromDBC;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,12 +14,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,11 +39,30 @@ public class RegistrationActivity extends AppCompatActivity {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private String mVerificationId;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
-    private final String TAG = "123123213212121";
+    private final String TAG = "Authentication";
+    private ImageView loadingImageView;
+    private void setupLoadingIcon() {
+        loadingImageView = findViewById(R.id.loadingIcon);
+        loadingImageView.setVisibility(View.GONE);
+
+        AnimatedVectorDrawableCompat animatedVectorDrawableCompat = AnimatedVectorDrawableCompat.create(this, R.drawable.spin_loading);
+        loadingImageView.setImageDrawable(animatedVectorDrawableCompat);
+
+        ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(loadingImageView, "rotation", 0f, 360f);
+        rotationAnimator.setDuration(2000); // Set the animation duration in milliseconds
+        rotationAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        rotationAnimator.start();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set all parameters to null
+        FirebaseIntegration.setUserCity(getApplicationContext(), null);
+        FirebaseIntegration.setUserSchool(getApplicationContext(), null);
+        FirebaseIntegration.setUserClass(getApplicationContext(), null);
+
         setContentView(R.layout.activity_registration);
 
         int flag = getIntent().getIntExtra("registration_flag", 0);
@@ -178,18 +200,25 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void goProfileInfoLayout() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         setContentView(R.layout.activity_registration_account_info);
         EditText name_input = findViewById(R.id.name_input);
+
+        assert user != null;
+        if (user.getDisplayName() != null) {
+            name_input.setText(user.getDisplayName());
+        }
+
         AppCompatButton continue_button = findViewById(R.id.continue_button);
         continue_button.setOnClickListener(view -> {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            UserProfileChangeRequest.Builder profileUpdatesBuilder = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(name_input.getText().toString());
+            if (user.getPhotoUrl() == null) {
+                profileUpdatesBuilder.setPhotoUri(Uri.parse("https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"));
+            }
+            UserProfileChangeRequest profileUpdates = profileUpdatesBuilder.build();
 
-            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                    .setDisplayName(name_input.getText().toString())
-                    .setPhotoUri(Uri.parse("https://i.imgur.com/7kMtTFQ.jpeg"))
-                    .build();
-
-            assert user != null;
             user.updateProfile(profileUpdates)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -204,6 +233,9 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void goCityChoosingLayout() {
         setContentView(R.layout.activity_registration_school);
+
+        setupLoadingIcon();
+
         String[] items = { getString(R.string.vitebsk), getString(R.string.minsk), getString(R.string.gomel), getString(R.string.grodno), getString(R.string.mogilev), getString(R.string.brest) };
         AutoCompleteTextView autoCompleteTextView = findViewById(R.id.auto_complete_textview1);
 
@@ -212,28 +244,29 @@ public class RegistrationActivity extends AppCompatActivity {
         autoCompleteTextView.setAdapter(arrayAdapter);
 
         autoCompleteTextView.setOnItemClickListener((adapterView, view, position, l) -> {
+            loadingImageView.setVisibility(View.VISIBLE);
             String city_name = adapterView.getItemAtPosition(position).toString();
             setupSchoolsChoosing(city_name);
-            TextInputLayout layout1 = findViewById(R.id.second_textinput);
-            layout1.setVisibility(View.VISIBLE);
-            LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.got_schools));
+
+            //LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.got_schools));
         });
 
     }
 
     private void setupSchoolsChoosing(String chosenCity) {
         getNamesFromDBC(String.format("cities/%s/schools", chosenCity), schoolNames -> {
-            Log.d("Got schools", schoolNames.toString());
+            //Log.d("Got schools", schoolNames.toString());
+            findViewById(R.id.second_textinput).setVisibility(View.VISIBLE);
+            loadingImageView.setVisibility(View.INVISIBLE);
             AutoCompleteTextView autoCompleteTextView = findViewById(R.id.auto_complete_textview2);
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_item, schoolNames);
 
             autoCompleteTextView.setAdapter(arrayAdapter);
 
             autoCompleteTextView.setOnItemClickListener((adapterView, view, position, l) -> {
+                loadingImageView.setVisibility(View.VISIBLE);
                 String schoolName = adapterView.getItemAtPosition(position).toString();
-                TextInputLayout textInputLayout = findViewById(R.id.third_textinput);
-                textInputLayout.setVisibility(View.VISIBLE);
-                LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.got_classes));
+                //LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.got_classes));
                 setupClassChoosing(chosenCity, schoolName);
             });
         });
@@ -243,7 +276,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private void setupClassChoosing(String city_name, String school_name) {
 
         getNamesFromDBC(String.format("cities/%s/schools/%s/classes", city_name, school_name), classes_names -> {
-
+            findViewById(R.id.third_textinput).setVisibility(View.VISIBLE);
+            loadingImageView.setVisibility(View.INVISIBLE);
             AutoCompleteTextView autoCompleteTextView = findViewById(R.id.auto_complete_textview3);
 
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_item, classes_names);
@@ -258,7 +292,8 @@ public class RegistrationActivity extends AppCompatActivity {
                     FirebaseIntegration.setUserCity(getApplicationContext(), city_name);
                     FirebaseIntegration.setUserSchool(getApplicationContext(), school_name); // Set user school in firebase and UserSettings ←
                     FirebaseIntegration.setUserClass(getApplicationContext(), class_name);
-
+                    FirebaseIntegration.setUserName(); // We don't need any parameters b.c. we can get user ourselves
+                    FirebaseIntegration.setUserPhoneNumber();
                     finishActivity(0);
 
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));

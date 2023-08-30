@@ -57,7 +57,7 @@
     So, you need to enter your mobile phone, to link this account to your smartphone.\n This is the way to save your account from hacking and you will
     never lose it.\n
     Authentication process is completely free!</string>
-    <string name="_continue">Continue</string>
+    <string name="continue_">Continue</string>
     <string name="registration_form">Security code has been sent to your phone number.
         <b>Don\'t tell anybody this code!</b></string>
     <string name="login_anonymously">Login anonymously</string>
@@ -73,7 +73,7 @@
     <string name="success">Success!</string>
     <string name="registration_final_text">Cool! We are almost there! One more step - introduce yourself to make everybody know who are you!</string>
     <string name="enter_your_name_and_surname">Enter your name and surname</string>
-    <string name="sign_out_from_profile">Sign out from profile</string>
+    <string name="logout_from_profile">Logout from profile</string>
     <string name="signed_out">Signed out. Restarting application</string>
     <string name="change_avatar_image">Change Avatar Image</string>
     <string name="avatar_changed">Avatar changed successfully</string>
@@ -103,5 +103,14 @@
     <string name="unable_to_get_date">Unable to get date. Check Internet connection</string>
     <string name="show_your_internet_connection">Shows your Internet connection</string>
     <string name="date_got">Date has been gotten. You can try again!</string>
-    <string name="no_oders_yet">No orders yet</string>
+    <string name="no_orders_yet">No orders yet</string>
+    <string name="name_cannot_be_null">Your name can not be empty</string>
+    <string name="checkup_your_info">Check your profile info</string>
+    <string name="username">Username</string>
+    <string name="city">City</string>
+    <string name="school">School</string>
+    <string name="class_">Class</string> <!-- `class` word reserved by Java -->
+    <string name="userinfo">User information</string>
+    <string name="phone_number">Phone number</string>
+    <string name="user_id">User ID</string>
 </resources>
