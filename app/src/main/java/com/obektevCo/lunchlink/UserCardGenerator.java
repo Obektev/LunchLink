@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -54,7 +53,7 @@ public class UserCardGenerator {
         avatarParams.gravity = Gravity.START | Gravity.CENTER_VERTICAL;
         avatarParams.setMargins((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, activity.getResources().getDisplayMetrics()), 0, 0, 0);
         avatarImageView.setLayoutParams(avatarParams);
-        setAvatarImage(avatarImageView, activity);
+        setAvatarImage(avatarImageView, activity, userRef.get("avatarURL"));
         avatarImageView.setContentDescription(activity.getString(R.string.user_card));
         avatarImageView.setElevation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, activity.getResources().getDisplayMetrics()));
         avatarImageView.setTranslationZ(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, activity.getResources().getDisplayMetrics()));
@@ -102,7 +101,7 @@ public class UserCardGenerator {
         cardView.addView(orderNameTextView);
 
         cardView.setOnClickListener(view -> {
-            setUserCardInfoDialog(activity.getApplicationContext(), userRef.get("phoneNumber"), userRef.get("uid"), userRef.get("userName"));
+            setUserCardInfoDialog(activity, userRef.get("phoneNumber"), userRef.get("uid"), userRef.get("userName"));
         });
 
         // Add CardView to parent layout
@@ -110,12 +109,11 @@ public class UserCardGenerator {
         parentLayout.addView(cardView,0);
     }
 
-    private static void setAvatarImage(ImageView avatarImageView, Activity activity) {
+    private static void setAvatarImage(ImageView avatarImageView, Activity activity, String photoUrl) {
         // Get the current user from Firebase Authentication
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             // Get the user's photo URL from the Firebase User object
-            Uri photoUrl = currentUser.getPhotoUrl();
             if (photoUrl != null) {
                 // Load the user's avatar image into the ImageView using Glide
                 Glide.with(activity.getApplicationContext())
@@ -158,6 +156,7 @@ public class UserCardGenerator {
         linearLayout.setPadding(15,15,15,15);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.round_shape));
+        linearLayout.setBackgroundColor(Color.WHITE); //TODO:
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -178,6 +177,7 @@ public class UserCardGenerator {
         AppCompatButton coolButton = new AppCompatButton(context);
         coolButton.setText(context.getString(R.string.cool));
         coolButton.setTextSize(18);
+        coolButton.setTextColor(context.getColor(R.color.semi_text));
         coolButton.setTypeface(typeface, Typeface.BOLD);
         coolButton.setBackgroundDrawable(AppCompatResources.getDrawable(context, R.drawable.round_shape)); // Use AppCompatResources!
         coolButton.setElevation(3);
@@ -194,6 +194,7 @@ public class UserCardGenerator {
 
         TextView title = new TextView(context);
         title.setText(userName);
+        title.setTextColor(context.getColor(R.color.semi_text));
         title.setTypeface(typeface, Typeface.BOLD);
         title.setTextSize(22);
         title.setLayoutParams(new LinearLayout.LayoutParams(

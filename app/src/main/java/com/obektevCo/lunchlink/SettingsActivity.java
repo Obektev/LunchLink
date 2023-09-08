@@ -46,6 +46,8 @@ public class SettingsActivity extends AppCompatActivity {
         getUserInfoButton.setOnClickListener(view -> getUserInfoMenu());
     }
 
+    // getUserInfoMenu: show user info in dialogue
+
     private void getUserInfoMenu() {
         FirebaseIntegration.getUserInfo(userInfo -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -135,6 +137,7 @@ public class SettingsActivity extends AppCompatActivity {
         user.updateProfile(profileUpdates)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        FirebaseIntegration.setUserName(); // We don't need any parameters, because we change user's name in db with his actual name of firebase
                         LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.name_changed));
                     }
                 });
@@ -163,6 +166,7 @@ public class SettingsActivity extends AppCompatActivity {
         AppCompatButton continueButton = new AppCompatButton(this);
         continueButton.setText(getString(R.string.continue_));
         continueButton.setTextSize(18);
+        continueButton.setTextColor(getColor(R.color.semi_text));
         continueButton.setTypeface(typeface, Typeface.BOLD);
         continueButton.setBackgroundDrawable(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.round_shape)); // Use AppCompatResources!
         continueButton.setElevation(5);
@@ -175,6 +179,7 @@ public class SettingsActivity extends AppCompatActivity {
         AppCompatButton cancelButton = new AppCompatButton(this);
         cancelButton.setText(getString(R.string.cancel));
         cancelButton.setTextSize(18);
+        cancelButton.setTextColor(getColor(R.color.semi_text));
         cancelButton.setTypeface(typeface, Typeface.BOLD);
         cancelButton.setBackgroundDrawable(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.round_shape)); // Use AppCompatResources!
         cancelButton.setElevation(5);
@@ -196,6 +201,7 @@ public class SettingsActivity extends AppCompatActivity {
         TextView title = new TextView(this);
         title.setGravity(Gravity.CENTER);
         title.setText(getString(R.string.enter_name));
+        title.setTextColor(getColor(R.color.semi_text));
         title.setTypeface(typeface, Typeface.BOLD);
         title.setTextSize(20);
 

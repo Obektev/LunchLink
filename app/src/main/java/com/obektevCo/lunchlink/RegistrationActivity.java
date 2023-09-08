@@ -1,11 +1,10 @@
 package com.obektevCo.lunchlink;
 
-import static com.obektevCo.lunchlink.FirebaseIntegration.getNamesFromDBC;
+import static com.obektevCo.lunchlink.FirebaseIntegration.getNamesFromCollection;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.util.Log;
@@ -214,9 +213,7 @@ public class RegistrationActivity extends AppCompatActivity {
         continue_button.setOnClickListener(view -> {
             UserProfileChangeRequest.Builder profileUpdatesBuilder = new UserProfileChangeRequest.Builder()
                     .setDisplayName(name_input.getText().toString());
-            if (user.getPhotoUrl() == null) {
-                profileUpdatesBuilder.setPhotoUri(Uri.parse("https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"));
-            }
+
             UserProfileChangeRequest profileUpdates = profileUpdatesBuilder.build();
 
             user.updateProfile(profileUpdates)
@@ -254,7 +251,7 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void setupSchoolsChoosing(String chosenCity) {
-        getNamesFromDBC(String.format("cities/%s/schools", chosenCity), schoolNames -> {
+        getNamesFromCollection(String.format("cities/%s/schools", chosenCity), schoolNames -> {
             //Log.d("Got schools", schoolNames.toString());
             findViewById(R.id.second_textinput).setVisibility(View.VISIBLE);
             loadingImageView.setVisibility(View.INVISIBLE);
@@ -275,7 +272,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void setupClassChoosing(String city_name, String school_name) {
 
-        getNamesFromDBC(String.format("cities/%s/schools/%s/classes", city_name, school_name), classes_names -> {
+        getNamesFromCollection(String.format("cities/%s/schools/%s/classes", city_name, school_name), classes_names -> {
             findViewById(R.id.third_textinput).setVisibility(View.VISIBLE);
             loadingImageView.setVisibility(View.INVISIBLE);
             AutoCompleteTextView autoCompleteTextView = findViewById(R.id.auto_complete_textview3);

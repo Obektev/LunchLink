@@ -1,6 +1,7 @@
 package com.obektevCo.lunchlink;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -105,6 +106,7 @@ public class FirebaseIntegration {
         }
     }
 
+    // setUserName: we don't need any parameters because we are linking user's firebase actual name to name in "users"
     public static void setUserName() {
         FirebaseFirestore db = FirebaseFirestore.getInstance(); // DON'T USE STATIC DB, IT'S MEMORY LEAK
         CollectionReference usersRef = db.collection("users");
@@ -144,20 +146,40 @@ public class FirebaseIntegration {
         }
     }
 
+    public static void setAvatarURL(Uri photoUrl) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance(); // DON'T USE STATIC DB, IT'S MEMORY LEAK
+        CollectionReference usersRef = db.collection("users");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser(); // much better to get user here to avoid null user before registration
+
+        if (user != null) {
+            String userId = user.getUid();
+
+            // Create a reference to the "users" collection and the document for the current user
+            DocumentReference userDocRef = usersRef.document(userId);
+
+            // Create a data object with the user's class name
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("avatarURL", photoUrl);
+
+            // Set the data in the Firestore document
+            userDocRef.set(userData, SetOptions.merge());
+        }
+    }
+
     public interface OnSchoolNamesLoadedListener {
         void onSchoolNamesLoaded(List<String> schoolNames);
     }
-    public static void getNamesFromDBC(String collectionPath, OnSchoolNamesLoadedListener listener) {
+    public static void getNamesFromCollection(String collectionPath, OnSchoolNamesLoadedListener listener) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference schoolsRef = db.collection(collectionPath);
+        CollectionReference namesRef = db.collection(collectionPath);
 
-        schoolsRef.get().addOnCompleteListener(task -> {
+        namesRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                List<String> schoolNames = new ArrayList<>();
+                List<String> names = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    schoolNames.add(document.getId());
+                    names.add(document.getId());
                 }
-                listener.onSchoolNamesLoaded(schoolNames);
+                listener.onSchoolNamesLoaded(names);
             } else {
                 //Log.d(TAG, "Error getting documents: ", task.getException());
             }

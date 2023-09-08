@@ -113,4 +113,7 @@
     <string name="userinfo">User information</string>
     <string name="phone_number">Phone number</string>
     <string name="user_id">User ID</string>
+    <string name="you_already_ordered">You have already ordered this meal!</string>
+    <string name="if_you_want_to_order_to_another_person">If you want to order this meal to another person, press "I Want" else press "Cancel"</string>
+    <string name="i_want">I Want</string>
 </resources>

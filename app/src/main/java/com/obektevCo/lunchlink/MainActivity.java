@@ -37,12 +37,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void setDateAndDay() {
+    private void setDateAndDay(onDateGot listener) {
         TextView date_object = findViewById(R.id.date_text);
         LunchLinkUtilities.getDate(getApplicationContext(), date -> {
             changeInternetConnectionIcon(date != null);
             date_object.setText(String.format("%s: %s", getString(R.string.date), date));
+            listener.dateGot();
         });
+    }
+    private interface onDateGot {
+        void dateGot();  // To block ability of user entering to meals when no Internet
     }
     private void setUpMealsButtons() {
         CardView breakfast_card = findViewById(R.id.breakfast_card);
@@ -150,8 +154,7 @@ public class MainActivity extends AppCompatActivity {
         checkUser(); // check if user signed in, has name, class
 
         // Setup
-        setDateAndDay();
-        setUpMealsButtons();
+        setDateAndDay(this::setUpMealsButtons); // To block ability of user entering to meals when no Internet
         setUpWidgets();
 
         UserSettings.initialize(getApplicationContext());

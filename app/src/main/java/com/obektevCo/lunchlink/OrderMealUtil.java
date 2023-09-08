@@ -1,10 +1,22 @@
 package com.obektevCo.lunchlink;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -15,7 +27,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class OrderMealUtil {
 
@@ -32,14 +43,18 @@ public class OrderMealUtil {
                         String cityName = documentSnapshot.getString("cityName");
                         String className = documentSnapshot.getString("className");
                         String schoolName = documentSnapshot.getString("schoolName");
-                        String uid = user.getUid();
-                        String phoneNumber = user.getPhoneNumber();
+                        //String avatarURL = documentSnapshot.getString("avatarURL");
+                        //String uid = user.getUid();
+                        //String phoneNumber = user.getPhoneNumber();
                         String userName = user.getDisplayName();
 
+                        /*
                         Map<String, String> userRef = new HashMap<>(); // Used for userCardGenerator
                         userRef.put("userName", userName);
                         userRef.put("uid", uid);
                         userRef.put("phoneNumber", phoneNumber);
+                        userRef.put("avatarURL", avatarURL);
+                        */
 
                         if (date == null) {
                             LunchLinkUtilities.makeToast(activity, activity.getString(R.string.unable_to_get_date));
@@ -59,6 +74,17 @@ public class OrderMealUtil {
                                     .addOnSuccessListener(documentSnapshot1 -> {
                                        if (documentSnapshot1.exists()) {
                                            if (documentSnapshot1.get("user_names") != null) { // there was a problem: if no order - update doesn't work, b.s. we need to put data first.
+
+                                               // TODO: check if user already orders meal:
+                                               List<Map<String, String>> previousOrders = (List<Map<String, String>>) documentSnapshot1.get("user_names");
+                                               for (Map<String, String> user_ : previousOrders) {
+                                                   if (user_.containsKey(user.getUid())) {
+                                                       showAlreadyOrderedDialog(activity);
+                                                       loadingIcon.setVisibility(View.GONE);
+                                                       return;
+                                                   }
+                                               }
+
                                                db.document(mealPath).update(putData)
                                                        .addOnSuccessListener(aVoid -> {
                                                            loadingIcon.setVisibility(View.GONE);
@@ -74,7 +100,7 @@ public class OrderMealUtil {
                                                        .addOnSuccessListener(aVoid -> {
                                                            loadingIcon.setVisibility(View.GONE);
                                                            LunchLinkUtilities.makeToast(activity, activity.getString(R.string.order_created));
-                                                           UserCardGenerator.createUserCard(activity, parentLayout, userRef);
+                                                           //UserCardGenerator.createUserCard(activity, parentLayout, userRef);
                                                        })
                                                        .addOnFailureListener(e -> {
                                                            LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong));
@@ -86,7 +112,7 @@ public class OrderMealUtil {
                                                    .addOnSuccessListener(aVoid -> {
                                                        loadingIcon.setVisibility(View.GONE);
                                                        LunchLinkUtilities.makeToast(activity, activity.getString(R.string.order_created));
-                                                       UserCardGenerator.createUserCard(activity, parentLayout, userRef);
+                                                       //UserCardGenerator.createUserCard(activity, parentLayout, userRef);
                                                    })
                                                    .addOnFailureListener(e -> {
                                                        LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong));
@@ -100,9 +126,86 @@ public class OrderMealUtil {
                 });
     }
 
+    private static void showAlreadyOrderedDialog(Activity activity) {
+        Typeface typeface = ResourcesCompat.getFont(activity, R.font.aldrich);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        LinearLayout linearLayout = new LinearLayout(activity);
+        linearLayout.setBackground(AppCompatResources.getDrawable(activity, R.drawable.round_shape));
+        linearLayout.setBackgroundColor(Color.WHITE); // TODO:
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setPadding(15,15,15,15);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(10, 10, 10,15);
+
+        LinearLayout.LayoutParams buttonLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        buttonLayoutParams.setMargins(25,5,25,5);
+
+        LinearLayout buttonLayout = new LinearLayout(activity);
+        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+        buttonLayout.setGravity(Gravity.CENTER);
+        buttonLayout.setPadding(15,15,15,15);
+
+        AppCompatButton iwantButton = new AppCompatButton(activity); // order to another person button
+        iwantButton.setText(activity.getString(R.string.i_want));
+        iwantButton.setTextColor(activity.getColor(R.color.semi_text));
+        iwantButton.setTextSize(18);
+        iwantButton.setTypeface(typeface, Typeface.BOLD);
+        iwantButton.setBackgroundDrawable(AppCompatResources.getDrawable(activity, R.drawable.round_shape)); // Use AppCompatResources!
+        iwantButton.setElevation(5);
+        iwantButton.setTranslationZ(9);
+        iwantButton.setGravity(Gravity.CENTER);
+        iwantButton.setLayoutParams(buttonLayoutParams);
+        iwantButton.setPadding(15,15,15,15);
+        iwantButton.setBackgroundColor(Color.argb(255,244,244,244));
+
+        AppCompatButton cancelButton = new AppCompatButton(activity);
+        cancelButton.setText(activity.getString(R.string.cancel));
+        cancelButton.setTextColor(activity.getColor(R.color.semi_text));
+        cancelButton.setTextSize(18);
+        cancelButton.setTypeface(typeface, Typeface.BOLD);
+        cancelButton.setBackgroundDrawable(AppCompatResources.getDrawable(activity, R.drawable.round_shape)); // Use AppCompatResources!
+        cancelButton.setElevation(5);
+        cancelButton.setTranslationZ(9);
+        cancelButton.setGravity(Gravity.CENTER);
+        cancelButton.setLayoutParams(buttonLayoutParams);
+        cancelButton.setPadding(15,15,15,15);
+        cancelButton.setBackgroundColor(Color.argb(255,244,244,244));
+
+        buttonLayout.addView(cancelButton);
+        buttonLayout.addView(iwantButton);
+
+        EditText input = new EditText(activity);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        linearLayout.addView(input);
+        linearLayout.addView(buttonLayout);
+
+        TextView title = new TextView(activity);
+        title.setGravity(Gravity.CENTER);
+        title.setText(activity.getString(R.string.you_already_ordered));
+        title.setTextColor(activity.getColor(R.color.semi_text));
+        title.setTypeface(typeface, Typeface.BOLD);
+        title.setTextSize(20);
+
+        builder.setCustomTitle(title);
+        builder.setView(linearLayout);
+
+        AlertDialog dialog = builder.create();
+
+        iwantButton.setOnClickListener(view -> {
+
+        });
+        cancelButton.setOnClickListener(view -> dialog.cancel());
+
+        dialog.show();
+    }
+
+    // TODO: replace this logic to MealOrderActivity and leave here only getting info interface
     public static void getPreviousOrders(Activity activity, String date, String mealName, ViewGroup parentLayout) {
-
-
         ImageView loadingImageView = activity.findViewById(R.id.loadingIcon);
         loadingImageView.setVisibility(View.VISIBLE);
 
@@ -111,25 +214,6 @@ public class OrderMealUtil {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             String mealPath = String.format("cities/%s/schools/%s/classes/%s/%s/%s", userInfo.get("cityName"), userInfo.get("schoolName"), userInfo.get("className"), date, mealName);
 
-            // Get previous orders
-            /*
-            db.document(mealPath).get()
-                    .addOnSuccessListener(documentSnapshot1 -> {
-
-                        loadingImageView.setVisibility(View.GONE);
-
-                        if (documentSnapshot1.exists())
-                            createUserCards(activity, documentSnapshot1, parentLayout);
-                        else
-                            Log.d("Document", "Document does not exist");
-                    })
-                    .addOnFailureListener(e -> {
-                        // Handle the failure
-                        loadingImageView.setVisibility(View.GONE);
-                        LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong));
-                    });
-
-             */
             // Set document listener to update
             db.document(mealPath).addSnapshotListener((documentSnapshot1, e) -> {
                 loadingImageView.setVisibility(View.GONE);
@@ -156,17 +240,20 @@ public class OrderMealUtil {
 
             ImageView loadingImageView = activity.findViewById(R.id.loadingIcon);
             loadingImageView.setVisibility(View.VISIBLE);
-            Log.e("dofidfh23gds", usersInfo.toString());
+            Log.e("UserInfo snapshot", usersInfo.toString());
             db.collection("users")
                     .document(entry.getKey())
                     .get()
                     .addOnSuccessListener(documentSnapshot1 -> {
+
                         Map<String, String> userRef = new HashMap<>();
-                        Log.e("gdfguhfdigudfhjgifdgh", documentSnapshot1.toString());
-                        userRef.put("userName", Objects.requireNonNull(documentSnapshot1.get("userName")).toString());
-                        userRef.put("phoneNumber", Objects.requireNonNull(documentSnapshot1.get("phoneNumber")).toString());
+                        userRef.put("userName", documentSnapshot1.get("userName").toString());
+                        userRef.put("phoneNumber", documentSnapshot1.get("userPhoneNumber").toString());
                         userRef.put("uid", entry.getKey());
+                        if (documentSnapshot1.get("avatarURL") != null)
+                            userRef.put("avatarURL", documentSnapshot1.get("avatarURL").toString());
                         UserCardGenerator.createUserCard(activity, parentLayout, userRef);
+                        loadingImageView.setVisibility(View.GONE);
                     });
 
 
@@ -176,4 +263,5 @@ public class OrderMealUtil {
     public static void removeOrder(Activity activity) {
 
     }
+
 }

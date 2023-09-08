@@ -16,9 +16,9 @@ import gun0912.tedimagepicker.builder.TedImagePicker;
 public class UserAvatarChanging {
     // Initialize Firebase Storage
     static FirebaseStorage storage = FirebaseStorage.getInstance();
-    static FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     // Get a reference to the storage location where you want to upload the image
-    static StorageReference storageRef = storage.getReference().child("avatars").child(currentUser.getUid() + ".jpg");
+    static StorageReference storageRef = storage.getReference().child("avatars").child(user.getUid() + ".jpg");
 
     public static void chooseImage(Activity activity) {
         TedImagePicker.with(activity)
@@ -39,11 +39,12 @@ public class UserAvatarChanging {
                                     .setPhotoUri(uri)
                                     .build();
 
-                            currentUser.updateProfile(profileUpdates)
+                            user.updateProfile(profileUpdates)
                                     .addOnCompleteListener(task1 -> {
                                         if (task1.isSuccessful()) {
                                             // User profile updated successfully.
                                             // You can now use Glide to load the updated avatar image into the ImageView for preview.
+                                            FirebaseIntegration.setAvatarURL(user.getPhotoUrl());
                                             LunchLinkUtilities.makeToast(context, context.getString(R.string.avatar_changed));
                                         } else {
                                             LunchLinkUtilities.makeToast(context, context.getString(R.string.something_went_wrong));
