@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -27,7 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Map;
 
 public class UserCardGenerator {
-    public static void createUserCard(Activity activity, ViewGroup parentLayout, Map<String, String> userRef) {
+    public static void createUserCard(Activity activity, ViewGroup parentLayout, Map<String, String> userRef, String mealPath) {
 
         String userName = userRef.get("userName");
         // Create CardView
@@ -40,9 +39,10 @@ public class UserCardGenerator {
         cardView.setLayoutParams(cardParams);
 
         cardView.setRadius(15);
-        cardView.setElevation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, activity.getResources().getDisplayMetrics()));
-        cardView.setTranslationZ(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, activity.getResources().getDisplayMetrics()));
-        cardView.setBackgroundColor(Color.WHITE);
+        cardView.setElevation(15);
+        cardView.setTranslationZ(6);
+        cardView.setBackgroundColor(activity.getColor(R.color.background));
+        cardView.setBackground(AppCompatResources.getDrawable(activity, R.drawable.round_shape));
 
         // Create ImageView for avatar
         ImageView avatarImageView = new ImageView(activity);
@@ -59,19 +59,19 @@ public class UserCardGenerator {
         avatarImageView.setTranslationZ(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, activity.getResources().getDisplayMetrics()));
 
         // Create TextView for order name
-        TextView orderNameTextView = new TextView(activity);
+        TextView userNameTextView = new TextView(activity);
         LinearLayout.LayoutParams orderNameParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
         );
         orderNameParams.setMargins((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, activity.getResources().getDisplayMetrics()), 0, 0, 0);
-        orderNameTextView.setLayoutParams(orderNameParams);
-        orderNameTextView.setText(userName);
-        orderNameTextView.setTextColor(Color.BLACK);
-        orderNameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        userNameTextView.setLayoutParams(orderNameParams);
+        userNameTextView.setText(userName);
+        userNameTextView.setTextColor(activity.getColor(R.color.text_main));
+        userNameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         Typeface typeface = ResourcesCompat.getFont(activity, R.font.aldrich);
-        orderNameTextView.setTypeface(typeface);
-        orderNameTextView.setGravity(Gravity.CENTER_VERTICAL);
+        userNameTextView.setTypeface(typeface);
+        userNameTextView.setGravity(Gravity.CENTER_VERTICAL);
 
         // Create ImageView for remove button
         ImageView removeImageView = new ImageView(activity);
@@ -84,9 +84,7 @@ public class UserCardGenerator {
         removeImageView.setLayoutParams(removeParams);
         removeImageView.setImageResource(R.drawable.baseline_remove_circle_outline_24);
         removeImageView.setContentDescription(activity.getString(R.string.user_card));
-        removeImageView.setElevation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, activity.getResources().getDisplayMetrics()));
-        removeImageView.setTranslationZ(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, activity.getResources().getDisplayMetrics()));
-        removeImageView.setOnClickListener(v -> showDeleteConfirmationDialog(activity, cardView));
+        removeImageView.setOnClickListener(v -> showDeleteConfirmationDialog(activity, mealPath, userRef.get("uid")));
 
         // Add views to CardView
         FrameLayout frameLayout = new FrameLayout(activity);
@@ -98,7 +96,7 @@ public class UserCardGenerator {
         frameLayout.addView(removeImageView);
 
         cardView.addView(frameLayout);
-        cardView.addView(orderNameTextView);
+        cardView.addView(userNameTextView);
 
         cardView.setOnClickListener(view -> {
             setUserCardInfoDialog(activity, userRef.get("phoneNumber"), userRef.get("uid"), userRef.get("userName"));
@@ -131,18 +129,14 @@ public class UserCardGenerator {
         }
     }
 
-    private static void showDeleteConfirmationDialog(Activity activity, CardView cardView) {
+    private static void showDeleteConfirmationDialog(Activity activity, String mealPath, String uid) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setMessage("Are you sure you want to delete this card?")
-                .setPositiveButton("Delete", (dialog, id) -> {
-                    // Delete the card (remove it from the parent layout)
-                    ViewGroup parent = (ViewGroup) cardView.getParent();
-                    if (parent != null) {
-
-                        //parent.removeView(cardView); // TODO: CHECK THIS
-                    }
+        builder.setMessage(activity.getString(R.string.are_u_sure_to_delete))
+                .setPositiveButton(activity.getString(R.string.delete), (dialog, id) -> {
+                    OrderMealUtil.removeOrder(activity, uid, mealPath);
+                    dialog.cancel();
                 })
-                .setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
+                .setNegativeButton(activity.getString(R.string.cancel), (dialog, id) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -156,7 +150,7 @@ public class UserCardGenerator {
         linearLayout.setPadding(15,15,15,15);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.round_shape));
-        linearLayout.setBackgroundColor(Color.WHITE); //TODO:
+        linearLayout.setBackgroundColor(context.getColor(R.color.roundshape));
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -166,25 +160,27 @@ public class UserCardGenerator {
         phoneNumberTextView.setLayoutParams(layoutParams);
         phoneNumberTextView.setTypeface(typeface);
         phoneNumberTextView.setText(String.format("%s: %s", context.getString(R.string.phone_number), phoneNumber));
+        phoneNumberTextView.setTextColor(context.getColor(R.color.light_text));
         phoneNumberTextView.setTextSize(18);
 
         TextView userIDTextView = new TextView(context);
         userIDTextView.setLayoutParams(layoutParams);
         userIDTextView.setTypeface(typeface);
         userIDTextView.setText(String.format("%s: %s", context.getString(R.string.user_id), uid));
+        userIDTextView.setTextColor(context.getColor(R.color.light_text));
         userIDTextView.setTextSize(18);
 
         AppCompatButton coolButton = new AppCompatButton(context);
         coolButton.setText(context.getString(R.string.cool));
         coolButton.setTextSize(18);
-        coolButton.setTextColor(context.getColor(R.color.semi_text));
+        coolButton.setTextColor(context.getColor(R.color.light_text));
         coolButton.setTypeface(typeface, Typeface.BOLD);
         coolButton.setBackgroundDrawable(AppCompatResources.getDrawable(context, R.drawable.round_shape)); // Use AppCompatResources!
-        coolButton.setElevation(3);
+        coolButton.setBackgroundColor(context.getColor(R.color.light));
+        coolButton.setElevation(5);
         coolButton.setTranslationZ(5);
         coolButton.setGravity(Gravity.CENTER);
         coolButton.setLayoutParams(layoutParams);
-        coolButton.setBackgroundColor(Color.argb(255,244,244,244));
 
         linearLayout.addView(phoneNumberTextView);
         linearLayout.addView(userIDTextView);
@@ -194,8 +190,10 @@ public class UserCardGenerator {
 
         TextView title = new TextView(context);
         title.setText(userName);
-        title.setTextColor(context.getColor(R.color.semi_text));
+        title.setLayoutParams(layoutParams);
+        title.setTextColor(context.getColor(R.color.text_main));
         title.setTypeface(typeface, Typeface.BOLD);
+        title.setBackgroundColor(context.getColor(R.color.background));
         title.setTextSize(22);
         title.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,

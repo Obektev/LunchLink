@@ -46,7 +46,7 @@ public class MealOrderActivity extends AppCompatActivity {
         bottomAppBar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.info_button) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MealOrderActivity.this);
-                builder.setMessage(getString(R.string.there_can_make_order) + parseMealTitle(MealOrderActivity.this, mealName))
+                builder.setMessage(getString(R.string.there_can_make_order) + ' ' + parseMealTitle(MealOrderActivity.this, mealName))
                         .setNegativeButton(getString(R.string.cool), (dialog, id) -> dialog.dismiss());
                 AlertDialog dialog = builder.create();
 
@@ -76,13 +76,13 @@ public class MealOrderActivity extends AppCompatActivity {
     }
 
     private void setupLoadingIcon() {
-        ImageView imageView = findViewById(R.id.loadingIcon);
-        imageView.setVisibility(View.GONE);
+        ImageView loadingImageView = findViewById(R.id.loadingIcon);
+        loadingImageView.setVisibility(View.GONE);
 
         AnimatedVectorDrawableCompat animatedVectorDrawableCompat = AnimatedVectorDrawableCompat.create(this, R.drawable.spin_loading);
-        imageView.setImageDrawable(animatedVectorDrawableCompat);
+        loadingImageView.setImageDrawable(animatedVectorDrawableCompat);
 
-        ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 360f);
+        ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(loadingImageView, "rotation", 0f, 360f);
         rotationAnimator.setDuration(2000); // Set the animation duration in milliseconds
         rotationAnimator.setRepeatCount(ValueAnimator.INFINITE);
         rotationAnimator.start();

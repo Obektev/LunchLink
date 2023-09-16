@@ -2,7 +2,6 @@ package com.obektevCo.lunchlink;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.InputType;
@@ -56,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
             linearLayout.setPadding(15,15,15,15);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
             linearLayout.setBackground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.round_shape));
+            linearLayout.setBackgroundColor(getColor(R.color.background));
 
             TextView usernameTextView = new TextView(this);
 
@@ -95,7 +95,7 @@ public class SettingsActivity extends AppCompatActivity {
             coolButton.setTranslationZ(5);
             coolButton.setGravity(Gravity.CENTER);
             coolButton.setLayoutParams(layoutParams);
-            coolButton.setBackgroundColor(Color.argb(255,244,244,244));
+            coolButton.setBackgroundColor(getColor(R.color.light));
 
             linearLayout.addView(usernameTextView);
             linearLayout.addView(cityTextView);
@@ -122,7 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
        });
     }
 
-    private void changeUserName(String name) {
+    private void changeUserName(String name, AlertDialog dialog) {
         if (name.equals("")) {
             LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.name_cannot_be_null));
             return;
@@ -139,6 +139,7 @@ public class SettingsActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseIntegration.setUserName(); // We don't need any parameters, because we change user's name in db with his actual name of firebase
                         LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.name_changed));
+                        dialog.cancel();
                     }
                 });
     }
@@ -148,6 +149,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setBackground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.round_shape));
+        linearLayout.setBackgroundColor(getColor(R.color.background));
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setPadding(15,15,15,15);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -174,7 +176,7 @@ public class SettingsActivity extends AppCompatActivity {
         continueButton.setGravity(Gravity.CENTER);
         continueButton.setLayoutParams(buttonLayoutParams);
         continueButton.setPadding(15,15,15,15);
-        continueButton.setBackgroundColor(Color.argb(255,244,244,244));
+        continueButton.setBackgroundColor(getColor(R.color.light));
 
         AppCompatButton cancelButton = new AppCompatButton(this);
         cancelButton.setText(getString(R.string.cancel));
@@ -187,7 +189,7 @@ public class SettingsActivity extends AppCompatActivity {
         cancelButton.setGravity(Gravity.CENTER);
         cancelButton.setLayoutParams(buttonLayoutParams);
         cancelButton.setPadding(15,15,15,15);
-        cancelButton.setBackgroundColor(Color.argb(255,244,244,244));
+        cancelButton.setBackgroundColor(getColor(R.color.light));
 
         buttonLayout.addView(cancelButton);
         buttonLayout.addView(continueButton);
@@ -212,7 +214,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         continueButton.setOnClickListener(view -> {
             String name = input.getText().toString();
-            changeUserName(name);
+            changeUserName(name, dialog);
         });
         cancelButton.setOnClickListener(view -> dialog.cancel());
 

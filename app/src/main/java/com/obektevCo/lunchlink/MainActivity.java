@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,10 +39,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setDateAndDay(onDateGot listener) {
-        TextView date_object = findViewById(R.id.date_text);
+        TextView dateObject = findViewById(R.id.date_text);
         LunchLinkUtilities.getDate(getApplicationContext(), date -> {
             changeInternetConnectionIcon(date != null);
-            date_object.setText(String.format("%s: %s", getString(R.string.date), date));
+            dateObject.setText(String.format("%s: %s", getString(R.string.date), date));
             listener.dateGot();
         });
     }
@@ -49,28 +50,28 @@ public class MainActivity extends AppCompatActivity {
         void dateGot();  // To block ability of user entering to meals when no Internet
     }
     private void setUpMealsButtons() {
-        CardView breakfast_card = findViewById(R.id.breakfast_card);
-        breakfast_card.setOnClickListener(view -> goToActivity(Enums.BREAKFAST));
-        CardView diet_card = findViewById(R.id.diet_card);
-        diet_card.setOnClickListener(view -> goToActivity(Enums.DIET));
-        CardView brunch_card = findViewById(R.id.brunch_card);
-        brunch_card.setOnClickListener(view -> goToActivity(Enums.BRUNCH));
-        CardView custom_card = findViewById(R.id.custom_card);
-        custom_card.setOnClickListener(view -> goToActivity(Enums.CUSTOM));
+        CardView breakfastCard = findViewById(R.id.breakfast_card);
+        breakfastCard.setOnClickListener(view -> goToActivity(Enums.BREAKFAST));
+        CardView dietCard = findViewById(R.id.diet_card);
+        dietCard.setOnClickListener(view -> goToActivity(Enums.DIET));
+        CardView brunchCard = findViewById(R.id.brunch_card);
+        brunchCard.setOnClickListener(view -> goToActivity(Enums.BRUNCH));
+        CardView customCard = findViewById(R.id.custom_card);
+        customCard.setOnClickListener(view -> goToActivity(Enums.CUSTOM));
     }
 
     private void setUpWidgets() {
         // Settings button
-        View setting_button = findViewById(R.id.menuSettings);
-        setting_button.setOnClickListener(view -> goToActivity(Enums.SETTINGSACTIVITY));
+        View settingButton = findViewById(R.id.menuSettings);
+        settingButton.setOnClickListener(view -> goToActivity(Enums.SETTINGSACTIVITY));
 
         // Credits when tap on the app's title
-        TextView application_title = findViewById(R.id.app_title);
-        application_title.setOnClickListener(view -> LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.credits)));
+        TextView applicationTitle = findViewById(R.id.app_title);
+        applicationTitle.setOnClickListener(view -> LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.credits)));
 
         // About button
-        View about_button = findViewById(R.id.info_button);
-        about_button.setOnClickListener(item -> {
+        View aboutButton = findViewById(R.id.info_button);
+        aboutButton.setOnClickListener(item -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             Typeface typeface = ResourcesCompat.getFont(this, R.font.aldrich);
 
@@ -93,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog dialog = builder.create();
 
             dialog.show();
+        });
+        View themeButton = findViewById(R.id.the_button);
+        themeButton.setOnClickListener(view -> {
+            Log.d("gsdfdsf101", String.valueOf(getResources().getIdentifier("AppTheme", "style", getPackageName())));
         });
     }
 

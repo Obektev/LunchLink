@@ -4,6 +4,12 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
-
     <style name="Theme.LunchLink" parent="Base.Theme.LunchLink" />
+    <color name="background">#fff</color>
+    <color name="text_main">@color/black</color>
+    <color name="light_text">#8f8f8f</color>
+    <color name="semi_text">#323232</color>
+    <color name="roundshape">#fafafa</color>
+    <color name="light">#B5B5B5</color>
+    <color name="floating_button_logo">#141c2b</color>
 </resources>

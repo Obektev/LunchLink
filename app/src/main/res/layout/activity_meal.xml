@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.obektevCo.lunchlink.MealOrderActivity"
-    android:backgroundTint="#fff"
+    android:backgroundTint="@color/background"
     android:theme="@style/Theme.AppCompat">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:background="#fff">
+        android:background="@color/background">
 
         <ImageView
             android:id="@+id/loadingIcon"
@@ -34,7 +34,7 @@
             android:fontFamily="@font/aldrich"
             android:text="@string/app_name"
             android:textAllCaps="false"
-            android:textColor="@color/black"
+            android:textColor="@color/text_main"
             android:textSize="35sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +61,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="15dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="50dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -75,14 +75,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:id="@+id/no_orders_yet_text"
+                        android:id="@+id/no_orders_yet_textview"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:text="@string/no_orders_yet"
                         android:textAlignment="center"
                         android:textSize="20sp"
                         android:fontFamily="@font/aldrich"
-                        android:textColor="#8f8f8f"
+                        android:textColor="@color/light_text"
                         />
                     <View
                         android:id="@+id/spacer"
@@ -101,7 +101,7 @@
         android:layout_width="match_parent"
         android:layout_height="63dp"
         android:layout_gravity="bottom"
-        android:backgroundTint="#fff"
+        android:backgroundTint="@color/background"
         app:menu="@menu/app_bar_menu_order_activity"
         app:hideOnScroll="true"
 
@@ -147,14 +147,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
 
-        app:srcCompat="@drawable/baseline_add_box_24"
-        app:rippleColor="#97845E"
-        app:maxImageSize="30dp"
-        app:layout_anchor="@id/bottomAppBar"
-        app:backgroundTint="#EADC7F"
-        app:elevation="3dp"
 
-        app:pressedTranslationZ="2dp"
-        android:contentDescription="@string/bottom_sheet_behavior" />
+
+        android:src="@drawable/plus_svgrepo_com"
+
+        app:layout_anchor="@id/bottomAppBar"
+         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

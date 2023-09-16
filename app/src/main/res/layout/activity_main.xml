@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.obektevCo.lunchlink.MainActivity"
-    android:backgroundTint="#fff">
+    android:backgroundTint="@color/background">
 
     <ImageView
         android:id="@+id/mealImageView"
@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:background="#fff">
+        android:background="@color/background">
 
         <TextView
             android:id="@+id/app_title"
@@ -31,7 +31,7 @@
             android:fontFamily="@font/aldrich"
             android:text="@string/app_name"
             android:textAllCaps="false"
-            android:textColor="@color/black"
+            android:textColor="@color/text_main"
             android:textSize="35sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -208,7 +208,7 @@
         android:layout_width="match_parent"
         android:layout_height="63dp"
         android:layout_gravity="bottom"
-        android:backgroundTint="#fff"
+        android:backgroundTint="@color/background"
         app:menu="@menu/app_bar_menu"
         app:hideOnScroll="true"
         app:fabAlignmentMode="end"
@@ -216,7 +216,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="190dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@android:color/transparent">
 
@@ -255,11 +255,8 @@
         android:layout_height="match_parent"
 
         app:srcCompat="@drawable/baseline_menu_book_24"
-        app:rippleColor="#97845E"
-        app:maxImageSize="30dp"
         app:layout_anchor="@id/bottomAppBar"
-        app:backgroundTint="#EADC7F"
-        app:elevation="3dp"
+        app:maxImageSize="30dp"
 
         app:pressedTranslationZ="2dp"
         android:contentDescription="@string/bottom_sheet_behavior"  />
@@ -268,7 +265,7 @@
         android:id="@+id/top_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@color/background"
         app:maxButtonHeight="50dp"
         app:menu="@menu/top_app_bar_menu"
         />
