@@ -39,8 +39,8 @@
     <string name="enter_text">Enter Text</string>
     <string name="you_already_admin">You are already Administrator</string>
     <string name="darkmode">darkmode</string>
-    <string name="testordername">TestOrderName</string>
-    <string name="user_card">user_card</string>
+    <string name="testordername" translatable="false">TestOrderName</string>
+    <string name="user_card" translatable="false">user_card</string>
     <string name="reload_page">Reload page</string>
     <string name="current_name">Your name now is</string>
     <string name="welcome">Welcome</string>

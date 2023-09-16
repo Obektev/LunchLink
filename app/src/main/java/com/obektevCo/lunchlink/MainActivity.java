@@ -3,9 +3,9 @@ package com.obektevCo.lunchlink;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
@@ -95,9 +96,24 @@ public class MainActivity extends AppCompatActivity {
 
             dialog.show();
         });
-        View themeButton = findViewById(R.id.the_button);
-        themeButton.setOnClickListener(view -> {
-            Log.d("gsdfdsf101", String.valueOf(getResources().getIdentifier("AppTheme", "style", getPackageName())));
+
+        SharedPreferences sharedPreferences = getSharedPreferences("MODE", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        MenuItem themeButton = ((Toolbar) findViewById(R.id.top_toolbar)).getMenu().findItem(R.id.the_button);
+        themeButton.setOnMenuItemClickListener(menuItem -> {
+            boolean night = sharedPreferences.getBoolean("theme_mode", true);
+            if (night) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                editor.putBoolean("theme_mode", false);
+                themeButton.setIcon(R.drawable.baseline_wb_sunny_24);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                editor.putBoolean("theme_mode", true);
+                themeButton.setIcon(R.drawable.baseline_dark_mode_24);
+            }
+            editor.apply();
+            return false;
         });
     }
 
@@ -148,7 +164,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
+        setUserTheme();
 
         if (getIntent().getBooleanExtra("SIGN_OUT", false)) {
             FirebaseAuth.getInstance().signOut();
@@ -164,6 +183,19 @@ public class MainActivity extends AppCompatActivity {
 
         UserSettings.initialize(getApplicationContext());
 
+    }
+
+    private void setUserTheme() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MODE", MODE_PRIVATE);
+        boolean night = sharedPreferences.getBoolean("theme_mode", true);
+        MenuItem themeButton = ((Toolbar) findViewById(R.id.top_toolbar)).getMenu().findItem(R.id.the_button);
+        if (night) {
+            themeButton.setIcon(R.drawable.baseline_dark_mode_24);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            themeButton.setIcon(R.drawable.baseline_wb_sunny_24);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 
 

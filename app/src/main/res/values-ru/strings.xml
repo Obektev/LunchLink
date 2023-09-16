@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LunchLink</string>
+    <string name="about">Инфо</string>
+    <string name="notifications">Уведомления</string>
+    <string name="accountsettings">Найстроки аккаунта</string>
+    <string name="breakfast">Завтрак</string>
+    <string name="diet">Диета</string>
+    <string name="brunch">Полдник</string>
+    <string name="date">дата</string>
+    <string name="duty">дежурный</string>
+    <string name="monday">Пн</string>
+    <string name="tuesday">Вт</string>
+    <string name="wednesday">Ср</string>
+    <string name="thursday">Чт</string>
+    <string name="friday">Пт</string>
+    <string name="saturday">Сб</string>
+    <string name="sunday">Вск</string>
+    <string name="button">Кнопка</string>
+    <string name="enter_name">Введите своё имя</string>
+    <string name="enter_second_name">Введите свою фамилию</string>
+    <string name="cancel">Отмена</string>
+    <string name="are_u_sure_to_delete">Вы действительно хотите удалить?</string>
+    <string name="custom">Специальный</string>
+    <string name="custom_meal">Свой список</string>
+    <string name="delete">Удалить</string>
+    <string name="refresh">Обновить</string>
+    <string name="settings">Настройки</string>
+    <string name="change_user_name">Изменить имя пользователя</string>
+    <string name="change_server_ip">Изменить ip сервера</string>
+    <string name="connection_established">Подключение установлено</string>
+    <string name="failed_to_connect">Не удалось подключиться к серверу</string>
+    <string name="ip_changed">IP изменён</string>
+    <string name="name_changed">Имя изменено</string>
+    <string name="menu">Меню</string>
+    <string name="credits">Сделано Obektev ©</string>
+    <string name="administrator_settings">Ключ Администратора</string>
+    <string name="now_you_are_an_admin">Вы стали Администратором</string>
+    <string name="invalid_password">Неправильный пароль</string>
+    <string name="enter_text">Введите текст</string>
+    <string name="you_already_admin">Вы уже Администратор</string>
+    <string name="darkmode">тёмный режим</string>
+    <string name="reload_page">Перезагрузить страницу</string>
+    <string name="current_name">Ваше имя теперь</string>
+    <string name="welcome">Добро пожаловать</string>
+    <string name="user">Пользователь</string>
+    <string name="main_activity_about_text">Добро пожаловать в LunchLink.
+        \nЗдесь вы можете заказывать еду. :D
+        \nИмя и аватарку можно сменить в настройках.
+        \nЕсли найдёте какие-то ошибки/баги, пишите мне <i>obektev@gmaill.com</i>
+        \nСделно Александром (Obektev) Ивановым.
+        \nГимназия №5 имени И.И. Людникова, г. Витебск
+        \n2023</string>
+    <string name="todo">Ту ду</string>
+    <string name="registration_welcome">Добро пожаловать в LunchLink. \nПохоже, вы ещё не открывали это приложение.
+    Вам нужно ввести своё номер телефона, чтобы зарегистрироваться.\n Так вы надёжно защитите свой аккаунт и не потеряете его!\n
+    Authentication process is completely free!</string>
+    <string name="continue_">Далее</string>
+    <string name="registration_form">Проверочный код отправлен на ваш номер телефона.
+        <b>Никому не говорите его!</b></string>
+    <string name="login_anonymously">Вход анонимно</string>
+    <string name="login_google">Вход с Google</string>
+    <string name="login_email">Вход с email</string>
+    <string name="enter_your_mobile_phone_here">Введите свой номрер телефона</string>
+    <string name="invalid_phone_number">Неверный номер телефона</string>
+    <string name="send">Отправить код</string>
+    <string name="enter_code_here">Введите код здесь</string>
+    <string name="verify">Подтвердить</string>
+    <string name="code_sent">Код отправлен</string>
+    <string name="wrong_code">Неверный код! Попробуйте ещё раз</string>
+    <string name="success">Успех!</string>
+    <string name="registration_final_text">Круто! Почти получилось! Ещё один шаг - представьте себя.</string>
+    <string name="enter_your_name_and_surname">Введите свои имя и фамилию</string>
+    <string name="logout_from_profile">Выйти из профиля</string>
+    <string name="signed_out">Выход. Перезагрузка</string>
+    <string name="change_avatar_image">Изменить аватарку</string>
+    <string name="avatar_changed">Аватар изменён</string>
+    <string name="about_and_credits">Ифнормация</string>
+    <string name="choose_school_message">Теперь вы можете выбрать город и школу. Не забудьте про класс!\n
+    <i>Нет вашей школы? Сообщите мне (obektev@gmail.com), и я добавлю!</i></string>
+    <string name="choose_city">Выберете свой город</string>
+    <string name="choose_school">Выберете свою школу</string>
+    <string name="choose_class">Выберете свой класс</string>
+    <string name="vitebsk">Витебск</string>
+    <string name="minsk">Минск</string>
+    <string name="brest">Брест</string>
+    <string name="gomel">Гомель</string>
+    <string name="grodno">Гродно</string>
+    <string name="mogilev">Могилёв</string>
+    <string name="something_went_wrong">Что-то пошло не так</string>
+    <string name="got_schools">Информация о школах получена</string>
+    <string name="got_classes">Информация о классах получена</string>
+    <string name="name_not_set">Имя не указано! Выберете себе имя</string>
+    <string name="city_not_set">Город не указан</string>
+    <string name="school_not_set">Школа не указана</string>
+    <string name="class_not_set">Класс не указан</string>
+    <string name="failed_connected_to_server">Ошибка. Проверьте подключение к Интернету</string>
+    <string name="there_can_make_order">Здесь вы можете заказать </string>
+    <string name="cool">Круто</string>
+    <string name="order_created">Заказ оформлен</string>
+    <string name="unable_to_get_date">Ошибка. Проверьте подключение к Интернету</string>
+    <string name="show_your_internet_connection">Показывает подключение к Интернету</string>
+    <string name="date_got">Дата получена. Можете попробовать ещё раз</string>
+    <string name="no_orders_yet">Пока ничего нет</string>
+    <string name="name_cannot_be_null">Имя не может быть пустым</string>
+    <string name="checkup_your_info">Проверить информацию о себе</string>
+    <string name="username">Имя</string>
+    <string name="city">Город</string>
+    <string name="school">Школа</string>
+    <string name="class_">Класс</string> <!-- `class` word reserved by Java -->
+    <string name="userinfo">Информация о пользователе</string>
+    <string name="phone_number">Номер телефона</string>
+    <string name="user_id">ID пользователя</string>
+    <string name="you_already_ordered">Вы уже заказывали это блюдо!</string>
+    <string name="if_you_want_to_order_to_another_person">Если вы хотите заказать это блюдо другому человеку, нажмите \<b>"Хочу\"</b> иначе \<b>"Отмена"</b></string>
+    <string name="i_want">Хочу</string>
+    <string name="enter_person_name">Введите имя</string>
+    <string name="ordered_by">заказано</string>
+    <string name="order_canceled">Заказ отменён</string>
+    <string name="connection_to_ethernet">Подключение к Интернету</string>
+</resources>
