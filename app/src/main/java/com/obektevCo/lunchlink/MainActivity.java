@@ -2,6 +2,7 @@ package com.obektevCo.lunchlink;
 
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -9,15 +10,19 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -115,6 +120,11 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
             return false;
         });
+
+        FloatingActionButton menuButton = findViewById(R.id.menu_floating_button);
+        menuButton.setOnClickListener(view -> {
+            openMenuDialog();
+        });
     }
 
     private void checkUser() {
@@ -159,6 +169,46 @@ public class MainActivity extends AppCompatActivity {
                         .addOnFailureListener(e -> LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.failed_to_connect)));
             }
         }
+    }
+
+    private void openMenuDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        Typeface typeface = ResourcesCompat.getFont(this, R.font.aldrich);
+
+        TextView title = new TextView(getApplicationContext());
+        title.setTypeface(typeface, Typeface.BOLD);
+        title.setTextColor(getColor(R.color.text_main));
+        title.setTextSize(20);
+        title.setText(getString(R.string.menu));
+        title.setBackground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.round_shape));
+        title.setBackgroundColor(getColor(R.color.background));
+        title.setGravity(Gravity.CENTER);
+        builder.setCustomTitle(title);
+
+        ScrollView scrollView = new ScrollView(getApplicationContext());
+        scrollView.setBackground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.round_shape));
+        scrollView.setBackgroundColor(getColor(R.color.background));
+        scrollView.setElevation(5);
+        scrollView.setTranslationZ(5);
+
+        LinearLayout linearLayout =  new LinearLayout(getApplicationContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        TextView ates = new TextView(getApplicationContext());
+        ates.setTextSize(20);
+        ates.setTextColor(getColor(R.color.semi_text));
+        ates.setTypeface(typeface);
+
+        OrderMealUtil.getMenuFromDB(getApplicationContext(), menu -> {
+            LunchLinkUtilities.makeToast(getApplicationContext(), menu.toString());
+            ates.setText(menu.toString());
+
+            scrollView.addView(linearLayout);
+
+            builder.setView(scrollView);
+            Dialog dialog = builder.create();
+            dialog.show();
+        });
     }
 
     @Override

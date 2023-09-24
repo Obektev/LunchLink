@@ -1,6 +1,8 @@
 package com.obektevCo.lunchlink;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Typeface;
 import android.text.InputType;
 import android.util.Log;
@@ -23,6 +25,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class OrderMealUtil {
@@ -239,6 +242,7 @@ public class OrderMealUtil {
 
             // Set document listener to update
             db.document(mealPath).addSnapshotListener((documentSnapshot, e) -> {
+                Log.e("DOCUMENT 245", documentSnapshot.toString());
                 loadingImageView.setVisibility(View.GONE);
                 if (e!=null) {
                     return;
@@ -262,7 +266,6 @@ public class OrderMealUtil {
 
         if (usersInfo.isEmpty()) {
             loadingImageView.setVisibility(View.GONE);
-            Log.d("gysdf 261", String.valueOf(parentLayout.getChildCount()));
             if (parentLayout.getChildCount() == 1) {
                 activity.recreate();
             }
@@ -333,5 +336,28 @@ public class OrderMealUtil {
                 .addOnFailureListener(e -> LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong)));
     }
 
+    interface onMenuGotListener {
+        void onMenuGot(Map<String, List<String>> menu);
+    }
 
+    @SuppressLint("DefaultLocale")
+    public static void getMenuFromDB(Context context, onMenuGotListener listener) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseIntegration.getUserInfo(userInfo -> {
+            if (userInfo == null) {
+                LunchLinkUtilities.makeToast(context, context.getString(R.string.something_went_wrong));
+                return;
+            }
+
+            String documentPath = String.format("cities/%s/schools/%s", userInfo.get("cityName"), userInfo.get("schoolName"));
+
+            db.document(documentPath)
+                    .addSnapshotListener((documentSnapshot, e) -> {
+                        assert documentSnapshot != null;
+                        if (documentSnapshot.exists()) {
+                            listener.onMenuGot((Map<String, List<String>>) documentSnapshot.get("menu"));
+                        }
+                    });
+        });
+    }
 }
