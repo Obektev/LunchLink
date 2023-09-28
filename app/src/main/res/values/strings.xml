@@ -83,12 +83,12 @@
     <string name="choose_city">Choose your city</string>
     <string name="choose_school">Chose your school</string>
     <string name="choose_class">Choose your class</string>
-    <string name="vitebsk">Vitebsk</string>
-    <string name="minsk">Minsk</string>
-    <string name="brest">Brest</string>
-    <string name="gomel">Gomel</string>
-    <string name="grodno">Grodno</string>
-    <string name="mogilev">Mogilev</string>
+    <string name="vitebsk" translatable="false">Vitebsk</string>
+    <string name="minsk" translatable="false">Minsk</string>
+    <string name="brest" translatable="false">Brest</string>
+    <string name="gomel" translatable="false">Gomel</string>
+    <string name="grodno" translatable="false">Grodno</string>
+    <string name="mogilev" translatable="false">Mogilev</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="got_schools">Got schools info</string>
     <string name="got_classes">Got classes info</string>
