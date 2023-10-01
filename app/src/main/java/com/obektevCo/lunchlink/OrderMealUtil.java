@@ -1,11 +1,9 @@
 package com.obektevCo.lunchlink;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
+import android.app.Dialog;
 import android.graphics.Typeface;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +15,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,12 +24,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class OrderMealUtil {
 
-    public static void createOrder(Activity activity, String date, String mealName, ViewGroup parentLayout) {
+    public static void createOrder(Activity activity, String date, String mealName) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -45,22 +44,22 @@ public class OrderMealUtil {
                         String schoolName = documentSnapshot.getString("schoolName");
 
                         String userName = user.getDisplayName();
+                        String mealPath = String.format("cities/%s/schools/%s/classes/%s/%s/%s", cityName, schoolName, className, date, mealName);
 
-                        if (date == null) {
-                            LunchLinkUtilities.makeToast(activity, activity.getString(R.string.unable_to_get_date));
-                            LunchLinkUtilities.getDate(activity, date1 -> LunchLinkUtilities.makeToast(activity, activity.getString(R.string.date_got)));
+                        Map<String, Object> putData = new HashMap<>();
+                        Map<String, Map<String, String>> info = new HashMap<>();
+                        Map<String, String> order = new HashMap<>();
+
+                        if (Objects.equals(mealName, "CUSTOM")) {
+                            showCustomMealDialog(activity, userName, user.getUid(), mealPath);
                         } else {
-
-                            String mealPath = String.format("cities/%s/schools/%s/classes/%s/%s/%s", cityName, schoolName, className, date, mealName);
-
-                            Map<String, Object> putData = new HashMap<>();
-                            Map<String, String> info = new HashMap<>();
-                            info.put(user.getUid(), userName);
+                            order.put(userName, null);
+                            info.put(user.getUid(), order);
                             putData.put("user_names", info);
 
                             putOrderData(activity, putData, mealPath, "orderself");
-
                         }
+
                     }
                 });
     }
@@ -74,21 +73,19 @@ public class OrderMealUtil {
 
         db.document(mealPath).get()
                 .addOnSuccessListener(documentSnapshot1 -> {
-                    //if (documentSnapshot1.exists()) {
-                    //if (documentSnapshot1.get("user_names") != null) { // there was a problem: if no order - update doesn't work, b.s. we need to put data first.
-                    Map<String, String> previousOrders = (Map<String, String>) documentSnapshot1.get("user_names");
+                    Map<String, Map<String, String>> previousOrders = (Map<String, Map<String, String>>) documentSnapshot1.get("user_names");
 
                     if (previousOrders != null) {
                         if (args.equals("orderself")) {
-                            for (Map.Entry<String, String> user_ : previousOrders.entrySet()) {
+                            for (Map.Entry<String, Map<String, String>> user_ : previousOrders.entrySet()) {
                                 if (user_.getKey().contains(user.getUid())) {
                                     showAlreadyOrderedDialog(activity, mealPath);
                                     loadingIcon.setVisibility(View.GONE);
-                                    return;
+                                    break;
                                 }
                             }
-                        }
-                        ((Map<String, String>) putData.get("user_names")).putAll(previousOrders);
+                        } else
+                            ((Map<String, Map<String, String>>) putData.get("user_names")).putAll(previousOrders);
                     }
                     db.document(mealPath).set(putData)
                             .addOnSuccessListener(aVoid -> {
@@ -99,32 +96,89 @@ public class OrderMealUtil {
                                 LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong));
                                 loadingIcon.setVisibility(View.GONE);
                             });
-                                           /*} else {
-                                               db.document(mealPath).set(putData)
-                                                       .addOnSuccessListener(aVoid -> {
-                                                           loadingIcon.setVisibility(View.GONE);
-                                                           LunchLinkUtilities.makeToast(activity, activity.getString(R.string.order_created));
-                                                           //UserCardGenerator.createUserCard(activity, parentLayout, userRef);
-                                                       })
-                                                       .addOnFailureListener(e -> {
-                                                           LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong));
-                                                           loadingIcon.setVisibility(View.GONE);
-                                                       });
-                                           }
-                                       } else {
-                                           db.document(mealPath).set(putData)
-                                                   .addOnSuccessListener(aVoid -> {
-                                                       loadingIcon.setVisibility(View.GONE);
-                                                       LunchLinkUtilities.makeToast(activity, activity.getString(R.string.order_created));
-                                                       //UserCardGenerator.createUserCard(activity, parentLayout, userRef);
-                                                   })
-                                                   .addOnFailureListener(e -> {
-                                                       LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong));
-                                                       loadingIcon.setVisibility(View.GONE);
-                                                   });
-                                           Log.w("Document", "Document doesn't exists");
-                                       } */
                 });
+    }
+
+    private static void showCustomMealDialog(Activity activity, String userName, String userID, String mealPath) {
+        Map<String, Object> putData = new HashMap<>();
+        Map<String, Map<String, String>> info = new HashMap<>();
+        Map<String, String> order = new HashMap<>();
+        Typeface typeface = ResourcesCompat.getFont(activity, R.font.aldrich);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        TextView title = new TextView(activity);
+        title.setTextSize(25);
+        title.setTypeface(typeface, Typeface.BOLD);
+        title.setText(activity.getString(R.string.order));
+        title.setTextColor(activity.getColor(R.color.text_main));
+        title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        builder.setCustomTitle(title);
+
+        LinearLayout linearLayout = new LinearLayout(activity);
+        linearLayout.setBackground(AppCompatResources.getDrawable(activity, R.drawable.round_shape));
+        linearLayout.setBackgroundColor(activity.getColor(R.color.background));
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setPadding(15,15,15,15);
+        linearLayout.setLayoutParams(layoutParams);
+
+        TextView enterOrderTextView = new TextView(activity);
+        enterOrderTextView.setTextColor(activity.getColor(R.color.light_text));
+        enterOrderTextView.setTypeface(typeface);
+        enterOrderTextView.setText(activity.getString(R.string.enter_order));
+        enterOrderTextView.setTextSize(25);
+        enterOrderTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        linearLayout.addView(enterOrderTextView);
+
+        ConstraintLayout.LayoutParams editTextLayoutParams = new ConstraintLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        editTextLayoutParams.setMargins(20, 10, 20, 10);
+        EditText editText = new EditText(activity);
+        editText.setTextColor(activity.getColor(R.color.light_text));
+        editText.setTypeface(typeface);
+        editText.setBackground(AppCompatResources.getDrawable(activity, R.drawable.round_shape));
+        editText.setBackgroundColor(activity.getColor(R.color.button_color));
+        editText.setElevation(5);
+        editText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        editText.setTranslationZ(5);
+        editText.setGravity(View.TEXT_ALIGNMENT_CENTER);
+        editText.setLayoutParams(editTextLayoutParams);
+
+        linearLayout.addView(editText);
+
+        AppCompatButton continueButton = new AppCompatButton(activity);
+        continueButton.setBackground(AppCompatResources.getDrawable(activity, R.drawable.round_shape));
+        continueButton.setBackgroundColor(activity.getColor(R.color.button_color));
+        continueButton.setTypeface(typeface);
+        continueButton.setTextColor(activity.getColor(R.color.light_text));
+        continueButton.setText(activity.getString(R.string.continue_));
+        continueButton.setTextSize(20);
+        continueButton.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        continueButton.setElevation(5);
+        continueButton.setTranslationZ(5);
+        continueButton.setLayoutParams(editTextLayoutParams); // fix
+
+        linearLayout.addView(continueButton);
+        builder.setView(linearLayout);
+        Dialog dialog = builder.create();
+
+        continueButton.setOnClickListener(view -> {
+            if (editText.getText() == null || editText.getText().toString().equals(" ")) {
+                LunchLinkUtilities.makeToast(activity, activity.getString(R.string.order_empty));
+            } else {
+                order.put(userName, editText.getText().toString());
+                info.put(userID, order);
+                putData.put("user_names", info);
+
+                putOrderData(activity, putData, mealPath, "orderself");
+                dialog.cancel();
+            }
+        });
+        dialog.show();
     }
 
     private static void showAlreadyOrderedDialog(Activity activity, String mealPath) {
@@ -213,17 +267,24 @@ public class OrderMealUtil {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         iwantButton.setOnClickListener(view -> {
-            String inputString = input.getText().toString();
-            if (inputString.isEmpty()) {
+            String userName = input.getText().toString();
+            if (userName.isEmpty()) {
                 LunchLinkUtilities.makeToast(activity, activity.getString(R.string.name_cannot_be_null));
                 return;
             }
-            Map<String, Object> putData = new HashMap<>();
-            Map<String, String> userInfo = new HashMap<>();
-            userInfo.put("ordered_by_" + user.getDisplayName() + "_to_" + inputString, inputString);
-            putData.put("user_names", userInfo);
 
-            putOrderData(activity, putData, mealPath, "orderanother");
+            String userId = "ordered_by_" + user.getDisplayName() + "_to_" + userName;
+            if (mealPath.contains("CUSTOM"))
+                showCustomMealDialog(activity, userName, userId, mealPath);
+            else {
+                Map<String, Object> putData = new HashMap<>();
+                Map<String, Map<String, String>> info = new HashMap<>();
+                Map<String, String> order = new HashMap<>();
+                order.put(userName, null);
+                info.put(userId, order);
+                putData.put("user_names", info);
+                putOrderData(activity, putData, mealPath, "another");
+            }
         });
         cancelButton.setOnClickListener(view -> dialog.cancel());
 
@@ -242,7 +303,6 @@ public class OrderMealUtil {
 
             // Set document listener to update
             db.document(mealPath).addSnapshotListener((documentSnapshot, e) -> {
-                Log.e("DOCUMENT 245", documentSnapshot.toString());
                 loadingImageView.setVisibility(View.GONE);
                 if (e!=null) {
                     return;
@@ -262,7 +322,7 @@ public class OrderMealUtil {
         ImageView loadingImageView = activity.findViewById(R.id.loadingIcon);
         loadingImageView.setVisibility(View.VISIBLE);
 
-        Map<String,String> usersInfo = (Map<String, String>) documentSnapshot.get("user_names");
+        Map<String,Map<String, String>> usersInfo = (Map<String, Map<String, String>>) documentSnapshot.get("user_names");
 
         if (usersInfo.isEmpty()) {
             loadingImageView.setVisibility(View.GONE);
@@ -275,12 +335,19 @@ public class OrderMealUtil {
         parentLayout.removeAllViews(); // When update, we need to delete previous cards
 
 
-        for (Map.Entry<String, String> entry : usersInfo.entrySet()) {
+        for (Map.Entry<String, Map<String, String>> entry : usersInfo.entrySet()) {
 
             if (entry.getKey().contains("ordered_by_")) { // check if current meal was ordered by another person
                 Map<String, String> userRef = new HashMap<>();
-                String replacement = entry.getKey().replace("ordered_by_", activity.getString(R.string.ordered_by) + ' ');
-                userRef.put("userName", entry.getValue());
+                String replacement = entry.getKey()
+                        .replace("ordered_by_", " " +
+                                activity.getString(R.string.ordered_by) + " ")
+                        .replace("_to_", " " + activity.getString(R.string.to_) + " ");
+                Map<String, String> data = (Map<String, String>) entry.getValue();
+                for (Map.Entry<String, String> entry1 : data.entrySet()) { // TODO: FIX THIS SHIT
+                    userRef.put("userName", entry1.getKey());
+                    userRef.put("order", entry1.getValue());
+                }
                 userRef.put("phoneNumber", replacement);
                 userRef.put("uid", entry.getKey());
                 UserCardGenerator.createUserCard(activity, parentLayout, userRef, mealPath);
@@ -296,6 +363,8 @@ public class OrderMealUtil {
                         userRef.put("userName", documentSnapshot1.get("userName").toString());
                         userRef.put("phoneNumber", documentSnapshot1.get("userPhoneNumber").toString());
                         userRef.put("uid", entry.getKey());
+                        Map<String, String> order = (Map<String, String>) entry.getValue();
+                        userRef.put("order", order.get(documentSnapshot1.get("userName").toString())); // TODO: FIX THIS SHIT
                         if (documentSnapshot1.get("avatarURL") != null)
                             userRef.put("avatarURL", documentSnapshot1.get("avatarURL").toString());
                         UserCardGenerator.createUserCard(activity, parentLayout, userRef, mealPath);
@@ -318,6 +387,7 @@ public class OrderMealUtil {
                         // Step 2: Remove the key-value pair from the map
                         if (data != null) {
                             Map<String, Object> userNames = (Map<String, Object>) data.get("user_names");
+
                             if (userNames != null) {
                                 userNames.remove(uid);
 
@@ -336,28 +406,4 @@ public class OrderMealUtil {
                 .addOnFailureListener(e -> LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong)));
     }
 
-    interface onMenuGotListener {
-        void onMenuGot(Map<String, List<String>> menu);
-    }
-
-    @SuppressLint("DefaultLocale")
-    public static void getMenuFromDB(Context context, onMenuGotListener listener) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseIntegration.getUserInfo(userInfo -> {
-            if (userInfo == null) {
-                LunchLinkUtilities.makeToast(context, context.getString(R.string.something_went_wrong));
-                return;
-            }
-
-            String documentPath = String.format("cities/%s/schools/%s", userInfo.get("cityName"), userInfo.get("schoolName"));
-
-            db.document(documentPath)
-                    .addSnapshotListener((documentSnapshot, e) -> {
-                        assert documentSnapshot != null;
-                        if (documentSnapshot.exists()) {
-                            listener.onMenuGot((Map<String, List<String>>) documentSnapshot.get("menu"));
-                        }
-                    });
-        });
-    }
 }

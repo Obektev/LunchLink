@@ -1,7 +1,14 @@
 package com.obektevCo.lunchlink;
 
+import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Map;
 
@@ -68,9 +75,11 @@ public class LunchLinkUtilities {
             case "DIET":
                 return context.getString(R.string.diet);
             case "BRUNCH":
-                return context.getString(R.string.brunch);
+                return context.getString(R.string.snack);
             case "CUSTOM":
                 return context.getString(R.string.custom_meal);
+            case "LUNCH":
+                return context.getString(R.string.lunch);
             default:
                 return "unknown";
         }
@@ -85,6 +94,33 @@ public class LunchLinkUtilities {
         return phone_number;
     }
 
+    interface onMenuImageUploadedListener {
+        void onImageUploaded();
+    }
+    public static void uploadMenuImage(Uri imageUri, Activity activity, onMenuImageUploadedListener listener){
 
+        LunchLinkUtilities.getDate(activity, date -> {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            FirebaseIntegration.getUserInfo(userInfo -> {
+
+                String menuPath = String.format("menu/%s/%s", userInfo.get("cityName"), userInfo.get("schoolName"));
+                StorageReference storageRef = storage.getReference().child(menuPath).child(date.replace("/", "\\") + ".jpg");
+                storageRef.putFile(imageUri)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                // Image upload is successful.
+                                storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                    makeToast(activity, activity.getString(R.string.uploaded));
+                                    listener.onImageUploaded();
+                                });
+                            } else {
+                                makeToast(activity, activity.getString(R.string.something_went_wrong));
+                            }
+                            ImageView loadingIcon = activity.findViewById(R.id.loadingIcon);
+                            loadingIcon.setVisibility(View.GONE);
+                        });
+            });
+        });
+    }
 }
 

@@ -36,8 +36,7 @@ public class MealOrderActivity extends AppCompatActivity {
                 imageView.setVisibility(View.VISIBLE);
                 OrderMealUtil.createOrder(MealOrderActivity.this,
                         date.replace("/","|"),
-                        mealName,
-                        findViewById(R.id.orders_list));
+                        mealName);
             });
         });
 
@@ -74,7 +73,6 @@ public class MealOrderActivity extends AppCompatActivity {
                     findViewById(R.id.orders_list));
         });
     }
-
     private void setupLoadingIcon() {
         ImageView loadingImageView = findViewById(R.id.loadingIcon);
         loadingImageView.setVisibility(View.GONE);

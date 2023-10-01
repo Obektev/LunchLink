@@ -4,6 +4,7 @@ public enum Enums {
     SETTINGSACTIVITY,
     BREAKFAST,
     DIET,
+    LUNCH,
     BRUNCH,
     CUSTOM,
     ABOUTACTIVITY,

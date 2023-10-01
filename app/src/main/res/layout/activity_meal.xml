@@ -110,7 +110,7 @@
             android:orientation="vertical"
             android:layout_width="190dp"
             android:layout_height="50dp"
-            android:layout_gravity="center"
+            android:layout_gravity="start"
             android:background="@android:color/transparent">
 
             <TextView
@@ -146,12 +146,9 @@
         android:id="@+id/add_order_button"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-
-
-
+        app:backgroundTint="#5EF484"
         android:src="@drawable/plus_svgrepo_com"
-
         app:layout_anchor="@id/bottomAppBar"
-         />
+        android:contentDescription="@string/todo" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

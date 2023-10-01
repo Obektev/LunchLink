@@ -101,11 +101,7 @@
             app:boxBackgroundColor="#D31B1B1B"
             app:boxStrokeColor="#B72E2E2E"
             app:hintTextColor="@color/white"
-            android:visibility="invisible"
-
-            app:errorTextColor="#fff"
-            app:placeholderTextColor="#00f"
-            app:helperTextTextColor="#ff0">
+            android:visibility="invisible">
 
             <AutoCompleteTextView
                 android:id="@+id/auto_complete_textview2"

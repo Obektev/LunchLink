@@ -1,31 +1,47 @@
 package com.obektevCo.lunchlink;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.ortiz.touchview.TouchImageView;
+
+import gun0912.tedimagepicker.builder.TedImagePicker;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -62,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
         dietCard.setOnClickListener(view -> goToActivity(Enums.DIET));
         CardView brunchCard = findViewById(R.id.brunch_card);
         brunchCard.setOnClickListener(view -> goToActivity(Enums.BRUNCH));
+        CardView lunchCard = findViewById(R.id.lunch_card);
+        lunchCard.setOnClickListener(view -> goToActivity(Enums.LUNCH));
         CardView customCard = findViewById(R.id.custom_card);
         customCard.setOnClickListener(view -> goToActivity(Enums.CUSTOM));
     }
@@ -128,13 +146,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkUser() {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if(firebaseUser == null) { // Check if user signed in firebase
+        if(user == null) { // Check if user signed in firebase
             Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
             startActivity(intent);
         } else {
-            if (firebaseUser.getDisplayName() == null || firebaseUser.getDisplayName().equals("")) {
+            if (user.getDisplayName() == null || user.getDisplayName().equals("")) {
                 Toast.makeText(getApplicationContext(), getString(R.string.name_not_set), Toast.LENGTH_LONG).show();
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class).putExtra("registration_flag", 1));
             } else {
@@ -142,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
                 db.collection("users")
-                        .document(firebaseUser.getUid())
+                        .document(user.getUid())
                         .get()
                         .addOnSuccessListener(documentSnapshot -> {
                             if (documentSnapshot.exists()) {
@@ -161,8 +179,6 @@ public class MainActivity extends AppCompatActivity {
                                     Intent intent = new Intent(this, RegistrationActivity.class);
                                     intent.putExtra("registration_flag", 2);
                                     startActivity(intent);
-                                } else {
-                                    LunchLinkUtilities.makeToast(getApplicationContext(), String.format("%s, %s", getString(R.string.welcome), firebaseUser.getDisplayName()));
                                 }
                             }
                         })
@@ -172,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openMenuDialog() {
+        loadingIcon.setVisibility(View.VISIBLE);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         Typeface typeface = ResourcesCompat.getFont(this, R.font.aldrich);
@@ -186,38 +203,127 @@ public class MainActivity extends AppCompatActivity {
         title.setGravity(Gravity.CENTER);
         builder.setCustomTitle(title);
 
-        ScrollView scrollView = new ScrollView(getApplicationContext());
-        scrollView.setBackground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.round_shape));
-        scrollView.setBackgroundColor(getColor(R.color.background));
-        scrollView.setElevation(5);
-        scrollView.setTranslationZ(5);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()),
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        LinearLayout layout = new LinearLayout(getApplicationContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setBackground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.round_shape));
+        layout.setBackgroundColor(getColor(R.color.background));
+        layout.setLayoutParams(layoutParams);
+        layout.setPadding(20, 20, 20, 20);
 
-        LinearLayout linearLayout =  new LinearLayout(getApplicationContext());
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        TextView ates = new TextView(getApplicationContext());
-        ates.setTextSize(20);
-        ates.setTextColor(getColor(R.color.semi_text));
-        ates.setTypeface(typeface);
+        FirebaseIntegration.getMenuFromDB(getApplicationContext(), image_uri -> {
+            loadingIcon.setVisibility(View.GONE);
+            if (image_uri == null) {
+                // Handle the case when there is no menu image
+                TextView noMenuTextView = new TextView(getApplicationContext());
+                noMenuTextView.setTypeface(typeface, Typeface.BOLD);
+                noMenuTextView.setTextColor(getColor(R.color.light_text));
+                noMenuTextView.setTextSize(15);
+                noMenuTextView.setText(getString(R.string.no_menu_yet));
+                noMenuTextView.setGravity(View.TEXT_ALIGNMENT_CENTER);
 
-        OrderMealUtil.getMenuFromDB(getApplicationContext(), menu -> {
-            LunchLinkUtilities.makeToast(getApplicationContext(), menu.toString());
-            ates.setText(menu.toString());
+                AppCompatButton uploadButton = new AppCompatButton(this);
 
-            scrollView.addView(linearLayout);
+                ConstraintLayout.LayoutParams buttonLayoutParams = new ConstraintLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics())
+                );
+                buttonLayoutParams.setMargins(15, 10, 15, 10);
+                uploadButton.setBackground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.round_shape));
+                uploadButton.setBackgroundColor(getColor(R.color.button_color));
+                uploadButton.setLayoutParams(buttonLayoutParams);
+                uploadButton.setElevation(5);
+                uploadButton.setTranslationZ(15);
 
-            builder.setView(scrollView);
-            Dialog dialog = builder.create();
-            dialog.show();
+                uploadButton.setTextColor(getColor(R.color.semi_text));
+                uploadButton.setText(R.string.upload_menu_image);
+                uploadButton.setTypeface(typeface);
+
+                layout.addView(noMenuTextView);
+                layout.addView(uploadButton);
+                builder.setView(layout);
+                Dialog dialog = builder.create();
+                uploadButton.setOnClickListener(view -> {
+                    TedImagePicker.with(MainActivity.this)
+                            .start(uri -> {
+                                loadingIcon.setVisibility(View.GONE);
+                                loadingIcon.setVisibility(View.VISIBLE);
+                                LunchLinkUtilities.uploadMenuImage(uri, MainActivity.this, () -> {
+                                    dialog.cancel();
+                                });
+                            });
+                });
+                dialog.show();
+            } else {
+                TouchImageView menuImageView = new TouchImageView(getApplicationContext());
+                // Load the image into the ImageView using Glide
+                loadingIcon.setVisibility(View.VISIBLE);
+                Glide.with(this)
+                        .asDrawable()
+                        .load(image_uri.toString()) // Convert URL to string
+                        .into(new CustomTarget<Drawable>() {
+                            @Override
+                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                                menuImageView.setImageDrawable(resource);
+                                loadingIcon.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+                                loadingIcon.setVisibility(View.GONE);
+                            }
+                        });
+
+                AppCompatButton deleteButton = new AppCompatButton(getApplicationContext());
+                deleteButton.setTranslationZ(5);
+                deleteButton.setElevation(5);
+
+                deleteButton.setPadding(0,10,0,10);
+                deleteButton.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                deleteButton.setBackground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.round_shape));
+                deleteButton.setBackgroundColor(getColor(R.color.button_color));
+                deleteButton.setText(getString(R.string.delete_menu_image));
+                deleteButton.setTypeface(typeface);
+                deleteButton.setTextColor(getColor(R.color.light_text));
+                deleteButton.setTextSize(25);
+
+
+                layout.addView(menuImageView);
+                layout.addView(deleteButton);
+                builder.setView(layout);
+
+                Dialog dialog = builder.create();
+                deleteButton.setOnClickListener(view ->{
+                    showDeletingMenuDialog(dialog);
+                });
+                dialog.show();
+            }
         });
     }
 
+    private void showDeletingMenuDialog(Dialog mainDialog) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage(getString(R.string.are_u_sure_to_delete))
+                .setPositiveButton(getString(R.string.delete), (dialog, id) -> {
+                    loadingIcon.setVisibility(View.VISIBLE);
+                    FirebaseIntegration.deleteMenuFromDB(MainActivity.this, () -> {
+                        loadingIcon.setVisibility(View.GONE);
+                        dialog.cancel();
+                        mainDialog.cancel();
+                    });
+                })
+                .setNegativeButton(getString(R.string.cancel), (dialog, id) -> dialog.dismiss());
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
-        setUserTheme();
 
         if (getIntent().getBooleanExtra("SIGN_OUT", false)) {
             FirebaseAuth.getInstance().signOut();
@@ -226,13 +332,29 @@ public class MainActivity extends AppCompatActivity {
         }
 
         checkUser(); // check if user signed in, has name, class
+        setUserTheme();
 
         // Setup
         setDateAndDay(this::setUpMealsButtons); // To block ability of user entering to meals when no Internet
         setUpWidgets();
+        setUpLoadingIcon();
 
         UserSettings.initialize(getApplicationContext());
 
+    }
+
+    ImageView loadingIcon;
+    private void setUpLoadingIcon() {
+        loadingIcon = findViewById(R.id.loadingIcon);
+        loadingIcon.setVisibility(View.GONE);
+
+        AnimatedVectorDrawableCompat animatedVectorDrawableCompat = AnimatedVectorDrawableCompat.create(this, R.drawable.spin_loading);
+        loadingIcon.setImageDrawable(animatedVectorDrawableCompat);
+
+        ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(loadingIcon, "rotation", 0f, 360f);
+        rotationAnimator.setDuration(2000); // Set the animation duration in milliseconds
+        rotationAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        rotationAnimator.start();
     }
 
     private void setUserTheme() {
@@ -245,6 +367,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             themeButton.setIcon(R.drawable.baseline_wb_sunny_24);
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            LunchLinkUtilities.makeToast(getApplicationContext(), String.format("%s, %s", getString(R.string.welcome), user.getDisplayName()));
         }
     }
 

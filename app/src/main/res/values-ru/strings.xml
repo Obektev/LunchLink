@@ -6,7 +6,7 @@
     <string name="accountsettings">Найстроки аккаунта</string>
     <string name="breakfast">Завтрак</string>
     <string name="diet">Диета</string>
-    <string name="brunch">Полдник</string>
+    <string name="snack">Полдник</string>
     <string name="date">дата</string>
     <string name="duty">дежурный</string>
     <string name="monday">Пн</string>
@@ -53,8 +53,8 @@
         \n2023</string>
     <string name="todo">Ту ду</string>
     <string name="registration_welcome">Добро пожаловать в LunchLink. \nПохоже, вы ещё не открывали это приложение.
-    Вам нужно ввести своё номер телефона, чтобы зарегистрироваться.\n Так вы надёжно защитите свой аккаунт и не потеряете его!\n
-    Authentication process is completely free!</string>
+    Вам нужно ввести своё номер телефона, чтобы зарегистрироваться.\n Так вы надёжно защитите свой аккаунт и не потеряете его!
+    </string>
     <string name="continue_">Далее</string>
     <string name="registration_form">Проверочный код отправлен на ваш номер телефона.
         <b>Никому не говорите его!</b></string>
@@ -81,12 +81,6 @@
     <string name="choose_city">Выберете свой город</string>
     <string name="choose_school">Выберете свою школу</string>
     <string name="choose_class">Выберете свой класс</string>
-    <string name="vitebsk">Витебск</string>
-    <string name="minsk">Минск</string>
-    <string name="brest">Брест</string>
-    <string name="gomel">Гомель</string>
-    <string name="grodno">Гродно</string>
-    <string name="mogilev">Могилёв</string>
     <string name="something_went_wrong">Что-то пошло не так</string>
     <string name="got_schools">Информация о школах получена</string>
     <string name="got_classes">Информация о классах получена</string>
@@ -112,10 +106,20 @@
     <string name="phone_number">Номер телефона</string>
     <string name="user_id">ID пользователя</string>
     <string name="you_already_ordered">Вы уже заказывали это блюдо!</string>
-    <string name="if_you_want_to_order_to_another_person">Если вы хотите заказать это блюдо другому человеку, нажмите \<b>"Хочу\"</b> иначе \<b>"Отмена"</b></string>
+    <string name="if_you_want_to_order_to_another_person">Если вы хотите заказать это блюдо другому человеку, нажмите <b>\"Хочу\"</b> иначе <b>\"Отмена\"</b></string>
     <string name="i_want">Хочу</string>
     <string name="enter_person_name">Введите имя</string>
     <string name="ordered_by">заказано</string>
     <string name="order_canceled">Заказ отменён</string>
     <string name="connection_to_ethernet">Подключение к Интернету</string>
+    <string name="uploaded">Загружено</string>
+    <string name="no_menu_yet">Никто не загрузил меню :(</string>
+    <string name="upload_menu_image">Отправить фото меню</string>
+    <string name="delete_menu_image">Удалить фото меню</string>
+    <string name="menu_image_deleted">Фото меню удалено</string>
+    <string name="lunch">Обед</string>
+    <string name="to_">для</string>
+    <string name="enter_order">Введите свой заказ</string>
+    <string name="order">Заказ</string>
+    <string name="order_empty">Заказ не может быть пустым</string>
 </resources>

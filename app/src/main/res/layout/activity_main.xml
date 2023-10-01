@@ -8,7 +8,7 @@
     android:backgroundTint="@color/background">
 
     <ImageView
-        android:id="@+id/mealImageView"
+        android:id="@+id/loadingIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleType="matrix"
@@ -78,6 +78,10 @@
                         android:layout_gravity="start|center_vertical"
                         android:layout_marginTop="60dp"
                         android:layout_marginStart="10dp"
+                        android:shadowColor="#010101"
+                        android:shadowDx="1"
+                        android:shadowDy="3"
+                        android:shadowRadius="15"
                         />
 
                     <ImageView
@@ -111,12 +115,53 @@
                         android:layout_gravity="start|center_vertical"
                         android:layout_marginTop="60dp"
                         android:layout_marginStart="10dp"
+                        android:shadowColor="#010101"
+                        android:shadowDx="1"
+                        android:shadowDy="3"
+                        android:shadowRadius="15"
                         />
 
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@drawable/diet"
+                        android:background="@color/white"
+                        android:scaleType="centerCrop" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- Lunch meal -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/lunch_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    app:cardCornerRadius="15dp"
+                    android:layout_margin="5dp"
+                    android:elevation="3dp"
+                    android:translationZ="3dp" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lunch"
+                        android:textStyle="bold"
+                        android:textColor="#fff"
+                        android:elevation="10dp"
+                        android:textSize="30sp"
+                        android:fontFamily="@font/aldrich"
+                        android:translationZ="10dp"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginTop="60dp"
+                        android:layout_marginStart="10dp"
+                        android:shadowColor="#010101"
+                        android:shadowDx="1"
+                        android:shadowDy="3"
+                        android:shadowRadius="15"
+                        />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/lunch"
                         android:background="@color/white"
                         android:scaleType="centerCrop" />
                 </androidx.cardview.widget.CardView>
@@ -134,7 +179,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/brunch"
+                        android:text="@string/snack"
                         android:textStyle="bold"
                         android:textColor="#fff"
                         android:elevation="10dp"
@@ -144,6 +189,10 @@
                         android:layout_gravity="start|center_vertical"
                         android:layout_marginTop="60dp"
                         android:layout_marginStart="10dp"
+                        android:shadowColor="#010101"
+                        android:shadowDx="1"
+                        android:shadowDy="3"
+                        android:shadowRadius="15"
                         />
 
                     <ImageView
@@ -178,6 +227,10 @@
                         android:layout_gravity="start|center_vertical"
                         android:layout_marginTop="60dp"
                         android:layout_marginStart="10dp"
+                        android:shadowColor="#010101"
+                        android:shadowDx="1"
+                        android:shadowDy="3"
+                        android:shadowRadius="15"
                         />
 
                     <ImageView
@@ -253,8 +306,9 @@
         android:id="@+id/menu_floating_button"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-
+        app:backgroundTint="#82E7F4"
         app:srcCompat="@drawable/baseline_menu_book_24"
+
         app:layout_anchor="@id/bottomAppBar"
         app:maxImageSize="30dp"
 

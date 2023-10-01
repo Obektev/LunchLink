@@ -1,12 +1,16 @@
 package com.obektevCo.lunchlink;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,7 +53,9 @@ public class SettingsActivity extends AppCompatActivity {
     // getUserInfoMenu: show user info in dialogue
 
     private void getUserInfoMenu() {
+        loadingIcon.setVisibility(View.VISIBLE);
         FirebaseIntegration.getUserInfo(userInfo -> {
+            loadingIcon.setVisibility(View.GONE);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             LinearLayout linearLayout = new LinearLayout(this);
@@ -123,6 +130,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void changeUserName(String name, AlertDialog dialog) {
+        loadingIcon.setVisibility(View.VISIBLE);
         if (name.equals("")) {
             LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.name_cannot_be_null));
             return;
@@ -137,10 +145,15 @@ public class SettingsActivity extends AppCompatActivity {
         user.updateProfile(profileUpdates)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        loadingIcon.setVisibility(View.GONE);
                         FirebaseIntegration.setUserName(); // We don't need any parameters, because we change user's name in db with his actual name of firebase
                         LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.name_changed));
                         dialog.cancel();
                     }
+                })
+                .addOnFailureListener(e -> {
+                    loadingIcon.setVisibility(View.GONE);
+                    LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.something_went_wrong));
                 });
     }
 
@@ -221,6 +234,19 @@ public class SettingsActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    ImageView loadingIcon;
+    private void setUpLoadingIcon() {
+        loadingIcon = findViewById(R.id.loadingIcon);
+        loadingIcon.setVisibility(View.GONE);
+
+        AnimatedVectorDrawableCompat animatedVectorDrawableCompat = AnimatedVectorDrawableCompat.create(this, R.drawable.spin_loading);
+        loadingIcon.setImageDrawable(animatedVectorDrawableCompat);
+
+        ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(loadingIcon, "rotation", 0f, 360f);
+        rotationAnimator.setDuration(2000); // Set the animation duration in milliseconds
+        rotationAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        rotationAnimator.start();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -231,5 +257,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         // Set up all widgets
         setUpWidgets();
+        setUpLoadingIcon();
     }
 }

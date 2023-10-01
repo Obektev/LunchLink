@@ -1,12 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.LunchLink" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.LunchLink" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
     <style name="Theme.LunchLink" parent="Base.Theme.LunchLink" />
     <color name="background">#fff</color>
-    <color name="text_main">@color/black</color>
+    <color name="button_color">#DDDDDD</color>
+    <color name="text_main">#0C0C0C</color>
     <color name="light_text">#8f8f8f</color>
     <color name="semi_text">#323232</color>
     <color name="roundshape">#fafafa</color>

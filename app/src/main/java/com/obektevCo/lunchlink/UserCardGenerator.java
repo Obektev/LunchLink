@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -58,7 +59,7 @@ public class UserCardGenerator {
         avatarImageView.setElevation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, activity.getResources().getDisplayMetrics()));
         avatarImageView.setTranslationZ(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, activity.getResources().getDisplayMetrics()));
 
-        // Create TextView for order name
+        // Create TextView for user name
         TextView userNameTextView = new TextView(activity);
         LinearLayout.LayoutParams orderNameParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -72,6 +73,8 @@ public class UserCardGenerator {
         Typeface typeface = ResourcesCompat.getFont(activity, R.font.aldrich);
         userNameTextView.setTypeface(typeface);
         userNameTextView.setGravity(Gravity.CENTER_VERTICAL);
+        userNameTextView.setElevation(5);
+        userNameTextView.setTranslationZ(5);
 
         // Create ImageView for remove button
         ImageView removeImageView = new ImageView(activity);
@@ -97,6 +100,18 @@ public class UserCardGenerator {
 
         cardView.addView(frameLayout);
         cardView.addView(userNameTextView);
+        if (userRef.get("order") != null) {
+            TextView orderTextView = new TextView(activity);
+            orderTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            orderTextView.setGravity(Gravity.BOTTOM);
+            orderTextView.setTypeface(typeface);
+            orderTextView.setElevation(5);
+            orderTextView.setTranslationZ(5);
+            orderTextView.setText(userRef.get("order"));
+            orderTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
+            orderTextView.setTextColor(activity.getColor(R.color.light_text));
+            cardView.addView(orderTextView);
+        }
 
         cardView.setOnClickListener(view -> {
             setUserCardInfoDialog(activity, userRef.get("phoneNumber"), userRef.get("uid"), userRef.get("userName"));

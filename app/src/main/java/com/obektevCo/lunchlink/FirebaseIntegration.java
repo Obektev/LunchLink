@@ -11,6 +11,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -209,4 +211,55 @@ public class FirebaseIntegration {
     interface onUserInfoGotListener {
         void onInfoGot(Map<String, String> userInfo);
     }
+
+    interface menuGotListener {
+        void onMenuGot(Uri image_ulr);
+    }
+
+    // getMenuFromDB: gets URL to image and backs to MainActivity, where pastes into ImageView
+    public static void getMenuFromDB(Context context, menuGotListener listener) {
+        FirebaseIntegration.getUserInfo(userInfo -> {
+            LunchLinkUtilities.getDate(context, date -> {
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                String menuPath = String.format("menu/%s/%s", userInfo.get("cityName"), userInfo.get("schoolName"));
+                StorageReference storageRef = storage.getReference().child(menuPath).child(date.replace("/", "\\") + ".jpg");
+
+                // Check if file exists
+                storageRef.getMetadata().addOnSuccessListener(storageMetadata -> {
+                    // File exists, get the download URL
+                    storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        // Pass the image URL back to the listener
+                        listener.onMenuGot(uri);
+                    }).addOnFailureListener(exception -> {
+                        // Handle any errors during URL retrieval
+                        listener.onMenuGot(null); // Pass null to indicate failure
+                    });
+                }).addOnFailureListener(exception -> {
+                    // File does not exist, handle this case
+                    listener.onMenuGot(null); // Pass null to indicate failure
+                });
+            });
+        });
+    }
+    interface  deletingMenuListener {
+        void onMenuDeleted();
+    }
+    public static void deleteMenuFromDB(Context context, deletingMenuListener listener) {
+        FirebaseIntegration.getUserInfo(userInfo -> {
+            LunchLinkUtilities.getDate(context, date -> {
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                String menuPath = String.format("menu/%s/%s", userInfo.get("cityName"), userInfo.get("schoolName"));
+                StorageReference storageRef = storage.getReference().child(menuPath).child(date.replace("/","\\") + ".jpg");
+
+                // Delete the file
+                storageRef.delete().addOnSuccessListener(aVoid -> {
+                    LunchLinkUtilities.makeToast(context, context.getString(R.string.menu_image_deleted));
+                    listener.onMenuDeleted();
+                }).addOnFailureListener(exception -> {
+                    LunchLinkUtilities.makeToast(context, context.getString(R.string.something_went_wrong));
+                });
+            });
+        });
+    }
+
 }

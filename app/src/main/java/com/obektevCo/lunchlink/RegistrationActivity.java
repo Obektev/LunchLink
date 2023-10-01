@@ -178,15 +178,10 @@ public class RegistrationActivity extends AppCompatActivity {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithCredential:success");
-
                         FirebaseUser user = task.getResult().getUser();
-                        LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.success));
                         assert user != null;
 
                         goProfileInfoLayout();
-
                     } else {
                         // Sign in failed, display a message and update the UI
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -236,7 +231,7 @@ public class RegistrationActivity extends AppCompatActivity {
         String[] items = { getString(R.string.vitebsk), getString(R.string.minsk), getString(R.string.gomel), getString(R.string.grodno), getString(R.string.mogilev), getString(R.string.brest) };
         AutoCompleteTextView autoCompleteTextView = findViewById(R.id.auto_complete_textview1);
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.list_item, items);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.list_item, items);
 
         autoCompleteTextView.setAdapter(arrayAdapter);
 
@@ -256,7 +251,7 @@ public class RegistrationActivity extends AppCompatActivity {
             findViewById(R.id.second_textinput).setVisibility(View.VISIBLE);
             loadingImageView.setVisibility(View.INVISIBLE);
             AutoCompleteTextView autoCompleteTextView = findViewById(R.id.auto_complete_textview2);
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_item, schoolNames);
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.list_item, schoolNames);
 
             autoCompleteTextView.setAdapter(arrayAdapter);
 
@@ -277,7 +272,7 @@ public class RegistrationActivity extends AppCompatActivity {
             loadingImageView.setVisibility(View.INVISIBLE);
             AutoCompleteTextView autoCompleteTextView = findViewById(R.id.auto_complete_textview3);
 
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_item, classes_names);
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.list_item, classes_names);
 
             autoCompleteTextView.setAdapter(arrayAdapter);
 

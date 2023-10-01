@@ -4,8 +4,9 @@
     <string name="notifications">Notifications</string>
     <string name="accountsettings">AccountSettings</string>
     <string name="breakfast">Breakfast</string>
+    <string name="lunch">Lunch</string>
     <string name="diet">Diet</string>
-    <string name="brunch">Brunch</string>
+    <string name="snack">Snack</string>
     <string name="date">date</string>
     <string name="duty">duty</string>
     <string name="monday">Mon</string>
@@ -55,8 +56,7 @@
     <string name="todo">TODO</string>
     <string name="registration_welcome">Welcome to LunchLink. \nIt seems, you didn\'t open this application yet.
     So, you need to enter your mobile phone, to link this account to your smartphone.\n This is the way to save your account from hacking and you will
-    never lose it.\n
-    Authentication process is completely free!</string>
+    never lose it.</string>
     <string name="continue_">Continue</string>
     <string name="registration_form">Security code has been sent to your phone number.
         <b>Don\'t tell anybody this code!</b></string>
@@ -114,10 +114,19 @@
     <string name="phone_number">Phone number</string>
     <string name="user_id">User ID</string>
     <string name="you_already_ordered">You have already ordered this meal!</string>
-    <string name="if_you_want_to_order_to_another_person">If you want to order this meal to another person, press \<b>"I Want\"</b> else press "Cancel"</string>
+    <string name="if_you_want_to_order_to_another_person">If you want to order this meal to another person, press <b>\n"I Want\"</b> else press \"Cancel\"</string>
     <string name="i_want">I Want</string>
     <string name="enter_person_name">Enter person name</string>
     <string name="ordered_by">ordered by</string>
     <string name="order_canceled">Order canceled</string>
     <string name="connection_to_ethernet">Connection to Ethernet</string>
+    <string name="uploaded">Uploaded</string>
+    <string name="no_menu_yet">No menu yet</string>
+    <string name="upload_menu_image">Upload menu image</string>
+    <string name="delete_menu_image">Delete menu image</string>
+    <string name="menu_image_deleted">Menu image deleted</string>
+    <string name="to_">to</string>
+    <string name="enter_order">Enter your order</string>
+    <string name="order">Order</string>
+    <string name="order_empty">Order can not be empty</string>
 </resources>

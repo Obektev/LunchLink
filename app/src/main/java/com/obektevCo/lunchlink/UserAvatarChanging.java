@@ -1,8 +1,8 @@
 package com.obektevCo.lunchlink;
 
 import android.app.Activity;
-import android.content.Context;
 import android.net.Uri;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,10 +23,11 @@ public class UserAvatarChanging {
     public static void chooseImage(Activity activity) {
         TedImagePicker.with(activity)
                 .start(uri -> {
+                    activity.findViewById(R.id.loadingIcon).setVisibility(View.VISIBLE);
                     uploadImage(uri, activity);
                 });
     }
-    private static void uploadImage(Uri imageUri, Context context){
+    private static void uploadImage(Uri imageUri, Activity activity){
         // Upload the image to Firebase Storage
         storageRef.putFile(imageUri)
                 .addOnCompleteListener(task -> {
@@ -45,15 +46,19 @@ public class UserAvatarChanging {
                                             // User profile updated successfully.
                                             // You can now use Glide to load the updated avatar image into the ImageView for preview.
                                             FirebaseIntegration.setAvatarURL(user.getPhotoUrl());
-                                            LunchLinkUtilities.makeToast(context, context.getString(R.string.avatar_changed));
+                                            LunchLinkUtilities.makeToast(activity, activity.getString(R.string.avatar_changed));
+                                            activity.findViewById(R.id.loadingIcon).setVisibility(View.GONE);
                                         } else {
-                                            LunchLinkUtilities.makeToast(context, context.getString(R.string.something_went_wrong));
+                                            LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong));
+                                            activity.findViewById(R.id.loadingIcon).setVisibility(View.GONE);
                                         }
                                     });
                         });
                     } else {
-                        LunchLinkUtilities.makeToast(context, context.getString(R.string.something_went_wrong));
+                        LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong));
+                        activity.findViewById(R.id.loadingIcon).setVisibility(View.GONE);
                     }
                 });
     }
+
 }
