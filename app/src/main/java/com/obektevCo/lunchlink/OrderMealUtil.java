@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Typeface;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,86 +24,179 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class OrderMealUtil {
-
     public static void createOrder(Activity activity, String date, String mealName) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        ImageView loadingIcon = activity.findViewById(R.id.loadingIcon);
 
         assert user != null;
+        loadingIcon.setVisibility(View.VISIBLE);
         db.collection("users")
                 .document(user.getUid())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
+                        loadingIcon.setVisibility(View.GONE);
                         String cityName = documentSnapshot.getString("cityName");
                         String className = documentSnapshot.getString("className");
                         String schoolName = documentSnapshot.getString("schoolName");
 
-                        String userName = user.getDisplayName();
                         String mealPath = String.format("cities/%s/schools/%s/classes/%s/%s/%s", cityName, schoolName, className, date, mealName);
 
-                        Map<String, Object> putData = new HashMap<>();
-                        Map<String, Map<String, String>> info = new HashMap<>();
-                        Map<String, String> order = new HashMap<>();
-
-                        if (Objects.equals(mealName, "CUSTOM")) {
-                            showCustomMealDialog(activity, userName, user.getUid(), mealPath);
-                        } else {
-                            order.put(userName, null);
-                            info.put(user.getUid(), order);
-                            putData.put("user_names", info);
-
-                            putOrderData(activity, putData, mealPath, "orderself");
-                        }
-
-                    }
-                });
-    }
-
-    @SuppressWarnings("unchecked")
-    private static void putOrderData(Activity activity, Map<String, Object> putData, String mealPath, String args) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        ImageView loadingIcon = activity.findViewById(R.id.loadingIcon);
-
-        db.document(mealPath).get()
-                .addOnSuccessListener(documentSnapshot1 -> {
-                    Map<String, Map<String, String>> previousOrders = (Map<String, Map<String, String>>) documentSnapshot1.get("user_names");
-
-                    if (previousOrders != null) {
-                        if (args.equals("orderself")) {
-                            for (Map.Entry<String, Map<String, String>> user_ : previousOrders.entrySet()) {
-                                if (user_.getKey().contains(user.getUid())) {
-                                    showAlreadyOrderedDialog(activity, mealPath);
+                        loadingIcon.setVisibility(View.VISIBLE);
+                        db.document(mealPath).get()
+                                .addOnSuccessListener(documentSnapshot1 -> {
                                     loadingIcon.setVisibility(View.GONE);
-                                    break;
-                                }
-                            }
-                        } else
-                            ((Map<String, Map<String, String>>) putData.get("user_names")).putAll(previousOrders);
+                                    Map<String, Map<String, String>> previousOrders = (Map<String, Map<String, String>>) documentSnapshot1.get("user_names");
+
+                                    // Check if user already ordered meal
+                                    boolean alreadyOrdered = false;
+                                    if (previousOrders != null) {
+                                        loadingIcon.setVisibility(View.VISIBLE);
+
+                                        for (Map.Entry<String, Map<String, String>> user_ : previousOrders.entrySet()) {
+                                            if (user_.getKey().contains(user.getUid())) {
+                                                alreadyOrdered = true;
+                                                break;
+                                            }
+                                        }
+                                        loadingIcon.setVisibility(View.GONE);
+                                    }
+
+                                    if (!alreadyOrdered && !mealName.equals("CUSTOM")) {
+                                        Log.d("70 70", "70 70");
+                                        Map<String, Object> putObject = new HashMap<>();
+                                        Map<String, Map<String, String>> putData = new HashMap<>();
+                                        Map<String, String> name_order = new HashMap<>();
+                                        name_order.put(user.getDisplayName(), null);
+                                        putData.put(user.getUid(), name_order);
+                                        if (previousOrders != null) {
+                                            putData.putAll(previousOrders);
+                                        }
+
+                                        putObject.put("user_names", putData);
+
+                                        loadingIcon.setVisibility(View.VISIBLE);
+                                        db.document(mealPath).set(putObject)
+                                                .addOnSuccessListener(aVoid -> {
+                                                    loadingIcon.setVisibility(View.GONE);
+                                                    LunchLinkUtilities.makeToast(activity, activity.getString(R.string.order_created));
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong));
+                                                    loadingIcon.setVisibility(View.GONE);
+                                                });
+                                    }
+                                    if (!alreadyOrdered && mealName.equals("CUSTOM")) {
+                                        customMealOrder(activity, order -> {
+                                            Map<String, Object> putObject = new HashMap<>();
+                                            Map<String, Map<String, String>> putData = new HashMap<>();
+                                            Map<String, String> name_order = new HashMap<>();
+                                            name_order.put(user.getDisplayName(), order);
+                                            putData.put(user.getUid(), name_order);
+                                            if (previousOrders != null) {
+                                                putData.putAll(previousOrders);
+                                            }
+
+                                            putObject.put("user_names", putData);
+
+                                            loadingIcon.setVisibility(View.VISIBLE);
+                                            db.document(mealPath).set(putObject)
+                                                    .addOnSuccessListener(aVoid -> {
+                                                        loadingIcon.setVisibility(View.GONE);
+                                                        LunchLinkUtilities.makeToast(activity, activity.getString(R.string.order_created));
+                                                        while (currentDialogs.size() > 0) {
+                                                            currentDialogs.get(currentDialogs.size() - 1).cancel();
+                                                            currentDialogs.remove(currentDialogs.size() - 1);
+                                                        }
+                                                        loadingIcon.setVisibility(View.GONE);
+                                                    })
+                                                    .addOnFailureListener(e -> {
+                                                        LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong));
+                                                        loadingIcon.setVisibility(View.GONE);
+                                                    });
+                                        });
+                                    }
+                                    if (alreadyOrdered && !mealName.equals("CUSTOM")) {
+                                        orderAnotherPerson(activity, name -> {
+                                            Map<String, Object> putObject = new HashMap<>();
+                                            Map<String, Map<String, String>> putData = new HashMap<>();
+                                            Map<String, String> name_order = new HashMap<>();
+
+                                            String replacement = String.format("ordered_by_%s_to_%s", user.getDisplayName(), name);
+
+                                            name_order.put(name, null);
+                                            putData.put(replacement, name_order);
+                                            putData.putAll(previousOrders);
+
+                                            putObject.put("user_names", putData);
+
+                                            loadingIcon.setVisibility(View.VISIBLE);
+                                            db.document(mealPath).set(putObject)
+                                                    .addOnSuccessListener(aVoid -> {
+                                                        loadingIcon.setVisibility(View.GONE);
+                                                        LunchLinkUtilities.makeToast(activity, activity.getString(R.string.order_created));
+                                                        while (currentDialogs.size() > 0) {
+                                                            currentDialogs.get(currentDialogs.size() - 1).cancel();
+                                                            currentDialogs.remove(currentDialogs.size() - 1);
+                                                        }
+                                                        loadingIcon.setVisibility(View.GONE);
+                                                    })
+                                                    .addOnFailureListener(e -> {
+                                                        LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong));
+                                                        loadingIcon.setVisibility(View.GONE);
+                                                    });
+                                        });
+                                    }
+                                    if (alreadyOrdered && mealName.equals("CUSTOM")) {
+                                        orderAnotherPerson(activity, name -> {
+                                            Map<String, Object> putObject = new HashMap<>();
+                                            Map<String, Map<String, String>> putData = new HashMap<>();
+                                            Map<String, String> name_order = new HashMap<>();
+
+                                            String replacement = String.format("ordered_by_%s_to_%s", user.getDisplayName(), name);
+                                            customMealOrder(activity, order -> {
+                                                name_order.put(name, order);
+                                                putData.put(replacement, name_order);
+                                                putData.putAll(previousOrders);
+
+                                                putObject.put("user_names", putData);
+
+                                                loadingIcon.setVisibility(View.VISIBLE);
+                                                db.document(mealPath).set(putObject)
+                                                        .addOnSuccessListener(aVoid -> {
+                                                            loadingIcon.setVisibility(View.GONE);
+                                                            LunchLinkUtilities.makeToast(activity, activity.getString(R.string.order_created));
+                                                            while (currentDialogs.size() > 0) {
+                                                                currentDialogs.get(currentDialogs.size() - 1).cancel();
+                                                                currentDialogs.remove(currentDialogs.size() - 1);
+                                                            }
+                                                            loadingIcon.setVisibility(View.GONE);
+                                                        })
+                                                        .addOnFailureListener(e -> {
+                                                            LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong));
+                                                            loadingIcon.setVisibility(View.GONE);
+                                                        });
+                                            });
+                                        });
+                                    }
+
+                                });
                     }
-                    db.document(mealPath).set(putData)
-                            .addOnSuccessListener(aVoid -> {
-                                loadingIcon.setVisibility(View.GONE);
-                                LunchLinkUtilities.makeToast(activity, activity.getString(R.string.order_created));
-                            })
-                            .addOnFailureListener(e -> {
-                                LunchLinkUtilities.makeToast(activity, activity.getString(R.string.something_went_wrong));
-                                loadingIcon.setVisibility(View.GONE);
-                            });
                 });
     }
 
-    private static void showCustomMealDialog(Activity activity, String userName, String userID, String mealPath) {
-        Map<String, Object> putData = new HashMap<>();
-        Map<String, Map<String, String>> info = new HashMap<>();
-        Map<String, String> order = new HashMap<>();
+    interface customOrderListener {
+        void onOrderGot(String order);
+    }
+    private static List<Dialog> currentDialogs = new ArrayList<>();
+    private static void customMealOrder(Activity activity, customOrderListener listener) {
         Typeface typeface = ResourcesCompat.getFont(activity, R.font.aldrich);
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         TextView title = new TextView(activity);
@@ -166,22 +260,24 @@ public class OrderMealUtil {
         builder.setView(linearLayout);
         Dialog dialog = builder.create();
 
+        currentDialogs.add(dialog);
+
         continueButton.setOnClickListener(view -> {
-            if (editText.getText() == null || editText.getText().toString().equals(" ")) {
+            String order = editText.getText().toString();
+            if (order.isEmpty()) {
                 LunchLinkUtilities.makeToast(activity, activity.getString(R.string.order_empty));
             } else {
-                order.put(userName, editText.getText().toString());
-                info.put(userID, order);
-                putData.put("user_names", info);
-
-                putOrderData(activity, putData, mealPath, "orderself");
-                dialog.cancel();
+                listener.onOrderGot(order);
             }
         });
+
         dialog.show();
     }
 
-    private static void showAlreadyOrderedDialog(Activity activity, String mealPath) {
+    interface orderAnotherPersonListener {
+        void onNameGot(String name);
+    }
+    private static void orderAnotherPerson(Activity activity, orderAnotherPersonListener listener) {
         Typeface typeface = ResourcesCompat.getFont(activity, R.font.aldrich);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -263,35 +359,21 @@ public class OrderMealUtil {
         builder.setView(linearLayout);
 
         AlertDialog dialog = builder.create();
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        currentDialogs.add(dialog);
 
         iwantButton.setOnClickListener(view -> {
             String userName = input.getText().toString();
             if (userName.isEmpty()) {
                 LunchLinkUtilities.makeToast(activity, activity.getString(R.string.name_cannot_be_null));
-                return;
-            }
+            } else
+                listener.onNameGot(userName);
 
-            String userId = "ordered_by_" + user.getDisplayName() + "_to_" + userName;
-            if (mealPath.contains("CUSTOM"))
-                showCustomMealDialog(activity, userName, userId, mealPath);
-            else {
-                Map<String, Object> putData = new HashMap<>();
-                Map<String, Map<String, String>> info = new HashMap<>();
-                Map<String, String> order = new HashMap<>();
-                order.put(userName, null);
-                info.put(userId, order);
-                putData.put("user_names", info);
-                putOrderData(activity, putData, mealPath, "another");
-            }
         });
         cancelButton.setOnClickListener(view -> dialog.cancel());
 
         dialog.show();
     }
 
-    // TODO: replace this logic to MealOrderActivity and leave here only getting info interface
     public static void getPreviousOrders(Activity activity, String date, String mealName, ViewGroup parentLayout) {
         ImageView loadingImageView = activity.findViewById(R.id.loadingIcon);
         loadingImageView.setVisibility(View.VISIBLE);

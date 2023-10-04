@@ -53,7 +53,7 @@
         \n2023</string>
     <string name="todo">Ту ду</string>
     <string name="registration_welcome">Добро пожаловать в LunchLink. \nПохоже, вы ещё не открывали это приложение.
-    Вам нужно ввести своё номер телефона, чтобы зарегистрироваться.\n Так вы надёжно защитите свой аккаунт и не потеряете его!
+    Вам нужно ввести свой номер телефона, чтобы зарегистрироваться.\n Так вы надёжно защитите свой аккаунт и не потеряете его!
     </string>
     <string name="continue_">Далее</string>
     <string name="registration_form">Проверочный код отправлен на ваш номер телефона.
@@ -61,7 +61,7 @@
     <string name="login_anonymously">Вход анонимно</string>
     <string name="login_google">Вход с Google</string>
     <string name="login_email">Вход с email</string>
-    <string name="enter_your_mobile_phone_here">Введите свой номрер телефона</string>
+    <string name="enter_your_mobile_phone_here">Введите свой номер телефона</string>
     <string name="invalid_phone_number">Неверный номер телефона</string>
     <string name="send">Отправить код</string>
     <string name="enter_code_here">Введите код здесь</string>

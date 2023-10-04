@@ -39,11 +39,15 @@ public class RegistrationActivity extends AppCompatActivity {
     private String mVerificationId;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
     private final String TAG = "Authentication";
-    private ImageView loadingImageView;
+    private void loading(int state) {
+        ImageView loadingImageView = findViewById(R.id.loadingIcon);
+        if (state == 1)
+            loadingImageView.setVisibility(View.VISIBLE);
+        else
+            loadingImageView.setVisibility(View.GONE);
+    }
     private void setupLoadingIcon() {
-        loadingImageView = findViewById(R.id.loadingIcon);
-        loadingImageView.setVisibility(View.GONE);
-
+        ImageView loadingImageView = findViewById(R.id.loadingIcon);
         AnimatedVectorDrawableCompat animatedVectorDrawableCompat = AnimatedVectorDrawableCompat.create(this, R.drawable.spin_loading);
         loadingImageView.setImageDrawable(animatedVectorDrawableCompat);
 
@@ -51,6 +55,8 @@ public class RegistrationActivity extends AppCompatActivity {
         rotationAnimator.setDuration(2000); // Set the animation duration in milliseconds
         rotationAnimator.setRepeatCount(ValueAnimator.INFINITE);
         rotationAnimator.start();
+
+        loadingImageView.setVisibility(View.GONE);
     }
 
     @Override
@@ -63,6 +69,7 @@ public class RegistrationActivity extends AppCompatActivity {
         FirebaseIntegration.setUserClass(getApplicationContext(), null);
 
         setContentView(R.layout.activity_registration);
+        setupLoadingIcon();
 
         int flag = getIntent().getIntExtra("registration_flag", 0);
 
@@ -103,6 +110,7 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void sendSMSCode(String phone_number) {
+        loading(1);
         PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
             @Override // Auto verification of device, not SMS-Code!
@@ -114,7 +122,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 //     detect the incoming verification SMS and perform verification without
                 //     user action.
                 Log.d(TAG, "onVerificationCompleted:" + credential);
-
+                LunchLinkUtilities.makeToast(getApplicationContext(), "VERIFICATION COMPLETE");
                 signInWithPhoneAuthCredential(credential);
             }
 
@@ -123,13 +131,15 @@ public class RegistrationActivity extends AppCompatActivity {
                 // This callback is invoked in an invalid request for verification is made,
                 // for instance if the the phone number format is not valid.
                 Log.w(TAG, "onVerificationFailed", e);
-
+                loading(0);
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
                     LunchLinkUtilities.makeToast(getApplicationContext(), "Invalid phone number or reCaptcha hasn't been finished!");
                 } else if (e instanceof FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
+                    LunchLinkUtilities.makeToast(getApplicationContext(), e.getMessage());
                 } else if (e instanceof FirebaseAuthMissingActivityForRecaptchaException) {
                     // reCAPTCHA verification attempted with null Activity
+                    LunchLinkUtilities.makeToast(getApplicationContext(), e.getMessage());
                 }
                 // Show a message and update the UI
             }
@@ -164,6 +174,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private void goVerifyLayout() {
         setContentView(R.layout.activity_registration_verify);
 
+        setupLoadingIcon();
+
         AppCompatButton verify_button = findViewById(R.id.verify_button);
         verify_button.setOnClickListener(view -> {
             EditText code_input = findViewById(R.id.code_input);
@@ -174,13 +186,13 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
-
+        loading(1);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = task.getResult().getUser();
                         assert user != null;
-
+                        loading(0);
                         goProfileInfoLayout();
                     } else {
                         // Sign in failed, display a message and update the UI
@@ -188,6 +200,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                             // The verification code entered was invalid
                             LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.wrong_code));
+                            loading(0);
                         }
                     }
                 });
@@ -197,6 +210,7 @@ public class RegistrationActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         setContentView(R.layout.activity_registration_account_info);
+        setupLoadingIcon();
         EditText name_input = findViewById(R.id.name_input);
 
         assert user != null;
@@ -210,13 +224,13 @@ public class RegistrationActivity extends AppCompatActivity {
                     .setDisplayName(name_input.getText().toString());
 
             UserProfileChangeRequest profileUpdates = profileUpdatesBuilder.build();
-
+            loading(1);
             user.updateProfile(profileUpdates)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.name_changed));
+                            loading(0);
                             goCityChoosingLayout();
-
                             Log.d(TAG, "User profile updated.");
                         }
                     });
@@ -225,7 +239,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void goCityChoosingLayout() {
         setContentView(R.layout.activity_registration_school);
-
         setupLoadingIcon();
 
         String[] items = { getString(R.string.vitebsk), getString(R.string.minsk), getString(R.string.gomel), getString(R.string.grodno), getString(R.string.mogilev), getString(R.string.brest) };
@@ -236,7 +249,6 @@ public class RegistrationActivity extends AppCompatActivity {
         autoCompleteTextView.setAdapter(arrayAdapter);
 
         autoCompleteTextView.setOnItemClickListener((adapterView, view, position, l) -> {
-            loadingImageView.setVisibility(View.VISIBLE);
             String city_name = adapterView.getItemAtPosition(position).toString();
             setupSchoolsChoosing(city_name);
 
@@ -246,17 +258,17 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void setupSchoolsChoosing(String chosenCity) {
+        loading(1);
         getNamesFromCollection(String.format("cities/%s/schools", chosenCity), schoolNames -> {
             //Log.d("Got schools", schoolNames.toString());
             findViewById(R.id.second_textinput).setVisibility(View.VISIBLE);
-            loadingImageView.setVisibility(View.INVISIBLE);
             AutoCompleteTextView autoCompleteTextView = findViewById(R.id.auto_complete_textview2);
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.list_item, schoolNames);
 
             autoCompleteTextView.setAdapter(arrayAdapter);
-
+            loading(0);
             autoCompleteTextView.setOnItemClickListener((adapterView, view, position, l) -> {
-                loadingImageView.setVisibility(View.VISIBLE);
+                loading(1);
                 String schoolName = adapterView.getItemAtPosition(position).toString();
                 //LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.got_classes));
                 setupClassChoosing(chosenCity, schoolName);
@@ -265,11 +277,11 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
 
-    private void setupClassChoosing(String city_name, String school_name) {
+    private void setupClassChoosing(String cityName, String schoolName) {
 
-        getNamesFromCollection(String.format("cities/%s/schools/%s/classes", city_name, school_name), classes_names -> {
+        getNamesFromCollection(String.format("cities/%s/schools/%s/classes", cityName, schoolName), classes_names -> {
             findViewById(R.id.third_textinput).setVisibility(View.VISIBLE);
-            loadingImageView.setVisibility(View.INVISIBLE);
+            loading(0);
             AutoCompleteTextView autoCompleteTextView = findViewById(R.id.auto_complete_textview3);
 
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.list_item, classes_names);
@@ -281,8 +293,8 @@ public class RegistrationActivity extends AppCompatActivity {
                 AppCompatButton continue_button = findViewById(R.id.continue_button);
                 continue_button.setVisibility(View.VISIBLE);
                 continue_button.setOnClickListener(v -> {
-                    FirebaseIntegration.setUserCity(getApplicationContext(), city_name);
-                    FirebaseIntegration.setUserSchool(getApplicationContext(), school_name); // Set user school in firebase and UserSettings ←
+                    FirebaseIntegration.setUserCity(getApplicationContext(), cityName);
+                    FirebaseIntegration.setUserSchool(getApplicationContext(), schoolName); // Set user school in firebase and UserSettings ←
                     FirebaseIntegration.setUserClass(getApplicationContext(), class_name);
                     FirebaseIntegration.setUserName(); // We don't need any parameters b.c. we can get user ourselves
                     FirebaseIntegration.setUserPhoneNumber();
