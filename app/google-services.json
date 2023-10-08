@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1009256664834",
+    "firebase_url": "https://lunchlink-c1cb5-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "lunchlink-c1cb5",
     "storage_bucket": "lunchlink-c1cb5.appspot.com"
   },
@@ -22,7 +23,7 @@
           }
         },
         {
-          "client_id": "1009256664834-62bq6p9e97oolbnhcngot6g70knvskv6.apps.googleusercontent.com",
+          "client_id": "1009256664834-1lgt16vo9ue4p7cbm13jb4ggjm7b8g80.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -35,7 +36,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1009256664834-62bq6p9e97oolbnhcngot6g70knvskv6.apps.googleusercontent.com",
+              "client_id": "1009256664834-1lgt16vo9ue4p7cbm13jb4ggjm7b8g80.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

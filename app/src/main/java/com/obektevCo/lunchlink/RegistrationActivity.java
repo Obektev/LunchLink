@@ -140,7 +140,9 @@ public class RegistrationActivity extends AppCompatActivity {
                 } else if (e instanceof FirebaseAuthMissingActivityForRecaptchaException) {
                     // reCAPTCHA verification attempted with null Activity
                     LunchLinkUtilities.makeToast(getApplicationContext(), e.getMessage());
-                }
+                } else
+                    LunchLinkUtilities.makeToast(getApplicationContext(), e.getMessage());
+
                 // Show a message and update the UI
             }
 

@@ -40,7 +40,6 @@ public class FirebaseIntegration {
             // Set the data in the Firestore document
             userDocRef.set(userData, SetOptions.merge())
                     .addOnSuccessListener(aVoid -> {
-                        LunchLinkUtilities.makeToast(context, context.getString(R.string.success));
                         UserSettings.setSchoolInMemory(context, school_name);
                     })
                     .addOnFailureListener(e -> {
@@ -68,7 +67,6 @@ public class FirebaseIntegration {
             // Set the data in the Firestore document
             userDocRef.set(userData, SetOptions.merge())
                     .addOnSuccessListener(aVoid -> {
-                        LunchLinkUtilities.makeToast(context, context.getString(R.string.success));
                         UserSettings.setCityInMemory(context, city_name);
                     })
                     .addOnFailureListener(e -> {
@@ -97,7 +95,6 @@ public class FirebaseIntegration {
             // Set the data in the Firestore document
             userDocRef.set(userData, SetOptions.merge())
                     .addOnSuccessListener(aVoid -> {
-                        LunchLinkUtilities.makeToast(context, context.getString(R.string.success));
                         UserSettings.setClassInMemory(context, class_name);
                     })
                     .addOnFailureListener(e -> {

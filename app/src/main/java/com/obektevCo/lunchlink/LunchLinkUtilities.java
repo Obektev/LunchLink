@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -26,23 +28,23 @@ public class LunchLinkUtilities {
     }
     public static void getDate(Context context, OnDateGotListener listener) {
         HTTPRequests httpRequests = new HTTPRequests();
-        Call<Map<String, String>> date_call = httpRequests.jsonPlaceHolderApi.getDate();
-
-        date_call.enqueue(new Callback<Map<String, String>>() {
+        Call<Map<String, String>> date_call = httpRequests.jsonPlaceHolderApi.getDate(); // Создать запрос
+        date_call.enqueue(new Callback<Map<String, String>>() { // Отправить запрос
             @Override
-            public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
+            public void onResponse(@NonNull Call<Map<String, String>> call, @NonNull Response<Map<String, String>> response) {
                 assert response.body() != null;
                 String date_string = response.body().get("date");
                 assert date_string != null;
+                // Форматирование даты в привычный нам формат
                 String new_date_string = date_string.substring(3, 5) +
                         "/" + date_string.substring(0, 2) + "/" +
                         date_string.substring(8, 10);
 
-                listener.onDateGot(new_date_string);
+                listener.onDateGot(new_date_string); // Дата получена и отформатирована
             }
-
             @Override
-            public void onFailure(Call<Map<String, String>> call, Throwable t) {
+            public void onFailure(@NonNull Call<Map<String, String>> call, @NonNull Throwable t) {
+                // Ошибка
                 listener.onDateGot(null);
                 LunchLinkUtilities.makeToast(context, context.getString(R.string.unable_to_get_date));
             }

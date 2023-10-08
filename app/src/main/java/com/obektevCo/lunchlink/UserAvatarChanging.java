@@ -21,21 +21,19 @@ public class UserAvatarChanging {
     static StorageReference storageRef = storage.getReference().child("avatars").child(user.getUid() + ".jpg");
 
     public static void chooseImage(Activity activity) {
-        TedImagePicker.with(activity)
+        TedImagePicker.with(activity) // Выбрать картинку
                 .start(uri -> {
                     activity.findViewById(R.id.loadingIcon).setVisibility(View.VISIBLE);
                     uploadImage(uri, activity);
                 });
     }
     private static void uploadImage(Uri imageUri, Activity activity){
-        // Upload the image to Firebase Storage
+        // Загрузить изображение в Firebase Storage
         storageRef.putFile(imageUri)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         // Image upload is successful.
-                        // Now you can update the user's profile with the new avatar URL.
                         storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            // 'uri' is the URL of the uploaded image. Save this URL to the user's profile using Firebase Authentication's updateProfile method.
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                     .setPhotoUri(uri)
                                     .build();
@@ -43,8 +41,6 @@ public class UserAvatarChanging {
                             user.updateProfile(profileUpdates)
                                     .addOnCompleteListener(task1 -> {
                                         if (task1.isSuccessful()) {
-                                            // User profile updated successfully.
-                                            // You can now use Glide to load the updated avatar image into the ImageView for preview.
                                             FirebaseIntegration.setAvatarURL(user.getPhotoUrl());
                                             LunchLinkUtilities.makeToast(activity, activity.getString(R.string.avatar_changed));
                                             activity.findViewById(R.id.loadingIcon).setVisibility(View.GONE);
