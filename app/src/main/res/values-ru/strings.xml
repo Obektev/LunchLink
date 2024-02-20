@@ -122,4 +122,5 @@
     <string name="enter_order">Введите свой заказ</string>
     <string name="order">Заказ</string>
     <string name="order_empty">Заказ не может быть пустым</string>
+    <string name="schoolinfo">Информация по школе</string>
 </resources>

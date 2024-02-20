@@ -38,7 +38,6 @@ import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.ortiz.touchview.TouchImageView;
 
 import gun0912.tedimagepicker.builder.TedImagePicker;
@@ -95,6 +94,11 @@ public class MainActivity extends AppCompatActivity {
 
         // About button
         View aboutButton = findViewById(R.id.info_button);
+        aboutButton.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, MealsInfoActivity.class);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        });
+        /*
         aboutButton.setOnClickListener(item -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             Typeface typeface = ResourcesCompat.getFont(this, R.font.aldrich);
@@ -119,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
             dialog.show();
         });
-
+        */
         SharedPreferences sharedPreferences = getSharedPreferences("MODE", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -155,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             if (user.getDisplayName() == null || user.getDisplayName().equals("")) {
                 Toast.makeText(getApplicationContext(), getString(R.string.name_not_set), Toast.LENGTH_LONG).show();
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class).putExtra("registration_flag", 1));
-            } else {
+            } /*else {
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -164,9 +168,11 @@ public class MainActivity extends AppCompatActivity {
                         .get()
                         .addOnSuccessListener(documentSnapshot -> {
                             if (documentSnapshot.exists()) {
+                                Log.d("168 168", String.valueOf(documentSnapshot));
                                 String cityName = documentSnapshot.getString("cityName");
                                 String className = documentSnapshot.getString("className");
                                 String schoolName = documentSnapshot.getString("schoolName");
+                                Log.d("User Info 171", cityName + ' ' + schoolName + ' ' + className);
 
                                 if (cityName == null || className == null || schoolName == null) {
                                     if (cityName == null)
@@ -184,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
                         })
                         .addOnFailureListener(e -> LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.failed_to_connect)));
             }
+            */
         }
     }
 

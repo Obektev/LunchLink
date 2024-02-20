@@ -129,4 +129,5 @@
     <string name="enter_order">Enter your order</string>
     <string name="order">Order</string>
     <string name="order_empty">Order can not be empty</string>
+    <string name="schoolinfo">School Information</string>
 </resources>
