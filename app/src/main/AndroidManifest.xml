@@ -23,7 +23,7 @@
         <activity
             android:name="com.obektevCo.lunchlink.MainActivity"
             android:exported="true"
-            android:launchMode="singleTop">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,6 +37,8 @@
         <activity android:name="com.obektevCo.lunchlink.RegistrationActivity"
             android:launchMode="singleTop"/>
         <activity android:name="com.obektevCo.lunchlink.MealsInfoActivity"
+            android:launchMode="singleTop"/>
+        <activity android:name="com.obektevCo.lunchlink.FirestorePopulationActivity"
             android:launchMode="singleTop"/>
 
         <meta-data

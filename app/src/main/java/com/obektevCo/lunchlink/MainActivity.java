@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
                         })
                         .addOnFailureListener(e -> LunchLinkUtilities.makeToast(getApplicationContext(), getString(R.string.failed_to_connect)));
             }
-            */
+*/
         }
     }
 
@@ -331,6 +331,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        //Intent intent = new Intent(this, FirestorePopulationActivity.class);
+        //startActivity(intent);
+
 
         if (getIntent().getBooleanExtra("SIGN_OUT", false)) {
             FirebaseAuth.getInstance().signOut();

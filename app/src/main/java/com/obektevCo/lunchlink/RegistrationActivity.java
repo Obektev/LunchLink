@@ -243,7 +243,7 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration_school);
         setupLoadingIcon();
 
-        String[] items = { getString(R.string.vitebsk), getString(R.string.minsk), getString(R.string.gomel), getString(R.string.grodno), getString(R.string.mogilev), getString(R.string.brest) };
+        String[] items = {"Витебск", "Могилёв", "Гомель", "Брест", "Минск", "Гродно"};
         AutoCompleteTextView autoCompleteTextView = findViewById(R.id.auto_complete_textview1);
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.list_item, items);
